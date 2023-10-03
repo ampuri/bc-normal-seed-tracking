@@ -1,0 +1,1 @@
+(()=>{let e=0;!function t(){e+=1,postMessage(e),setTimeout((()=>t()),500)}()})();
