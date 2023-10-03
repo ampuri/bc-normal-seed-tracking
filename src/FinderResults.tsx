@@ -57,6 +57,13 @@ const FinderResults = ({
           <Typography variant="body1">
             Found a total of {seedsFound.length} seed
             {seedsFound.length > 1 && "s"} matching your rolls.
+            <br />
+            Important: these seeds are from{" "}
+            <strong style={{ fontWeight: "bold" }}>
+              before the pulls you entered above
+            </strong>
+            . Please use your pulls above to verify that the seed is correct on
+            the tracker, and then update your seed accordingly.
             {seedsFound.length > 1 && (
               <>
                 <br />
