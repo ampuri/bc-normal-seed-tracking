@@ -7,7 +7,9 @@ import {
 
 type Roll = {
   rarity: number;
+  raritySeed: number;
   unitName: string;
+  unitSeed: number;
   rerolledUnitName?: string;
 };
 
@@ -55,10 +57,12 @@ const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
   let lastRoll = "";
   for (let i = 0; i < numRolls; i++) {
     seed = advanceSeed(seed);
-    const rarity = getRarity({ seed, banner });
+    const raritySeed = seed;
+    const rarity = getRarity({ seed: raritySeed, banner });
 
     seed = advanceSeed(seed);
-    let [unitId, unitName] = getUnit({ seed, rarity, banner });
+    const unitSeed = seed;
+    let [unitId, unitName] = getUnit({ seed: unitSeed, rarity, banner });
     // If there's a dupe that should be rerolled, simulate the reroll but don't actually do it
     if (unitName === lastRoll && banner.pools[rarity].reroll) {
       const nextSeed = advanceSeed(seed);
@@ -70,13 +74,17 @@ const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
       });
       rolls.push({
         rarity,
+        raritySeed,
         unitName,
+        unitSeed,
         rerolledUnitName,
       });
     } else {
       rolls.push({
         rarity,
+        raritySeed,
         unitName,
+        unitSeed,
       });
     }
     lastRoll = unitName; // Not rerolledUnitName because a reroll would take us off this track
