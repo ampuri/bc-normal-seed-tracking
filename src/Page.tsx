@@ -40,7 +40,7 @@ const Page = () => {
           </li>
           <ul>
             <li>
-              Looking for your seed? Try <a href="/finder">here</a>.
+              Looking for your seed? Try <a href="#/finder">here</a>.
             </li>
           </ul>
           <li>
