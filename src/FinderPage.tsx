@@ -15,6 +15,12 @@ const Styles = styled.div`
   }
 `;
 
+type WorkerMessage = {
+  type: "progress" | "seedFound";
+  percentageSearched?: number;
+  seed?: number;
+};
+
 const FinderPage = () => {
   const onClick = () => {
     const partialInitialMessage = generateWorkerInitializationMessage({
@@ -34,19 +40,37 @@ const FinderPage = () => {
     });
 
     if (window.Worker) {
+      const chunkSize = 100_000_000;
+      const startingSeed = 1;
+      const endingSeedPlusOne = 2 ** 32;
+      const chunks = [];
+      for (let start = 0; start <= endingSeedPlusOne; start += chunkSize) {
+        chunks.push([
+          Math.max(startingSeed, start),
+          Math.min(endingSeedPlusOne, start + chunkSize),
+        ]);
+      }
+
       const workers = [];
-      for (let i = 0; i < 1; i++) {
+      for (const [workerNumber, [startSeed, endSeed]] of chunks.entries()) {
         const initialMessage = {
           ...partialInitialMessage,
-          workerNumber: i,
-          startSeed: 3356970559,
-          endSeed: 3356970559 + 3,
+          workerNumber,
+          startSeed,
+          endSeed,
         };
         const worker = new Worker(
           new URL("./seedFinderWorker.js", import.meta.url)
         );
-        worker.onmessage = (event) => {
-          console.log(`Got message from worker ${i}: ${event.data}`);
+        worker.onmessage = (event: { data: WorkerMessage }) => {
+          const messageType = event.data.type;
+          if (messageType === "progress") {
+            console.log(
+              `Worker ${workerNumber} progress ${event.data.percentageSearched}%`
+            );
+          } else if (messageType === "seedFound") {
+            console.log(`Worker ${workerNumber} found seed ${event.data.seed}`);
+          }
         };
         worker.postMessage(initialMessage);
         workers.push(worker);

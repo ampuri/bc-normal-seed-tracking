@@ -73,20 +73,40 @@ const searchRange = (data) => {
     bannerUnits,
     bannerRerollablePools,
   } = data;
+
+  const oneTenthBlock = (endSeed - startSeed) / 10;
+  let percentageSearched = 0;
+  let outputBreakpoint = startSeed + oneTenthBlock;
+
   for (let seed = startSeed; seed < endSeed; seed++) {
-    const result = check({
-      workerNumber,
+    if (seed >= outputBreakpoint) {
+      percentageSearched += 10;
+      postMessage({
+        type: "progress",
+        percentageSearched: percentageSearched,
+      });
+      outputBreakpoint += oneTenthBlock;
+    }
+    const seedIsValid = check({
       seed,
       rolls,
       bannerRateCumSum,
       bannerUnits,
       bannerRerollablePools,
     });
-    console.log(`Checked seed ${seed}, got result ${result}`);
+    if (seedIsValid) {
+      postMessage({
+        type: "seedFound",
+        seed: seed,
+      });
+    }
   }
 };
 
 onmessage = (e) => {
-  postMessage(`Got message ${JSON.stringify(e.data)}`);
   searchRange(e.data);
+  postMessage({
+    type: "progress",
+    percentageSearched: 100,
+  });
 };
