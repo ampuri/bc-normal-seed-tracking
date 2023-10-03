@@ -103,6 +103,16 @@ const TrackTable = ({
                   const urlParams = new URLSearchParams(window.location.search);
                   urlParams.set("seed", unit.unitSeed.toString());
                   const canonicalDestination = `?${urlParams.toString()}`;
+
+                  const rerollUrlParams = new URLSearchParams(
+                    window.location.search
+                  );
+                  rerollUrlParams.set(
+                    "seed",
+                    unit.rerolledUnitSeed?.toString()
+                  );
+                  const rerollDestination = `?${rerollUrlParams.toString()}`;
+
                   const rerolledEntry =
                     track === "A"
                       ? `${unit.rerolledUnitName} -> ${i + 2}B`
@@ -110,7 +120,7 @@ const TrackTable = ({
                   return (
                     <BottomTd key={j} rarity={unit.rarity}>
                       {unit.rerolledUnitName ? (
-                        rerolledEntry
+                        <a href={rerollDestination}>{rerolledEntry}</a>
                       ) : (
                         <a href={canonicalDestination}>{unit.unitName}</a>
                       )}
