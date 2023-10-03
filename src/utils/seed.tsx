@@ -11,6 +11,7 @@ export type Roll = {
   unitName: string;
   unitSeed: number;
   rerolledUnitName?: string;
+  rerolledUnitSeed?: number;
 };
 
 type BannerRolls = {
@@ -84,6 +85,7 @@ const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
         unitName,
         unitSeed,
         rerolledUnitName,
+        rerolledUnitSeed: nextSeed,
       });
     } else {
       rolls.push({

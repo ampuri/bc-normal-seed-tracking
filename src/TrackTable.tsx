@@ -56,9 +56,7 @@ const TrackTable = ({
   rolls: BannerTrackRolls[];
   track: "A" | "B";
 }) => {
-  console.log(rolls);
   const zippedRolls = zip(rolls.map((roll) => roll.track));
-  console.log(zippedRolls);
   return (
     <Table cellSpacing={0}>
       <thead>
@@ -85,21 +83,37 @@ const TrackTable = ({
                   {i + 1}
                   {track}
                 </Td>
-                {row.map((unit, j) => (
-                  <TopTd key={j} rarity={unit.rarity}>
-                    {unit.rerolledUnitName ? unit.unitName : "\u00A0"}
-                  </TopTd>
-                ))}
+                {row.map((unit, j) => {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  urlParams.set("seed", unit.unitSeed.toString());
+                  const canonicalDestination = `?${urlParams.toString()}`;
+                  return (
+                    <TopTd key={j} rarity={unit.rarity}>
+                      {unit.rerolledUnitName ? (
+                        <a href={canonicalDestination}>{unit.unitName}</a>
+                      ) : (
+                        "\u00A0"
+                      )}
+                    </TopTd>
+                  );
+                })}
               </tr>
               <tr>
                 {row.map((unit, j) => {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  urlParams.set("seed", unit.unitSeed.toString());
+                  const canonicalDestination = `?${urlParams.toString()}`;
                   const rerolledEntry =
                     track === "A"
                       ? `${unit.rerolledUnitName} -> ${i + 2}B`
                       : `<- ${i + 3}A ${unit.rerolledUnitName}`;
                   return (
                     <BottomTd key={j} rarity={unit.rarity}>
-                      {unit.rerolledUnitName ? rerolledEntry : unit.unitName}
+                      {unit.rerolledUnitName ? (
+                        rerolledEntry
+                      ) : (
+                        <a href={canonicalDestination}>{unit.unitName}</a>
+                      )}
                     </BottomTd>
                   );
                 })}

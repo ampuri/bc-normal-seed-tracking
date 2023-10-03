@@ -14,7 +14,12 @@ const Container = styled.div`
 `;
 
 const RollTable = () => {
-  const allRolls = generateAllRolls(1, 100);
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialSeed = parseInt(urlParams.get("seed")!, 10) || 1;
+  const numRolls = parseInt(urlParams.get("rolls")!, 10) || 100;
+  const allRolls = generateAllRolls(initialSeed, numRolls);
+  console.log(allRolls);
+
   const trackARolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,
     track: roll.trackA,
