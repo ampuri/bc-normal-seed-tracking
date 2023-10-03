@@ -35,7 +35,10 @@ const FinderPage = () => {
   const [userRolls, setUserRolls] = useState<(string | null)[]>(
     Array(10).fill(null)
   );
-  const setUserRoll = (index: number, unit: string) => {
+  const setUserRoll = (index: number, unit: string | null) => {
+    if (unit === "null") {
+      unit = null;
+    }
     setUserRolls((prevRolls) => [
       ...prevRolls.slice(0, index),
       unit,
@@ -183,7 +186,7 @@ const FinderPage = () => {
                 marginBottom: "4px",
               }}
             >
-              <option value="null" disabled selected={roll === null}>
+              <option value="null" selected={roll === null}>
                 -- Select roll {i + 1} --
               </option>
               {bannerPool.map((unit) => {
