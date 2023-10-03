@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 
@@ -14,6 +14,18 @@ const Styles = styled.div`
 `;
 
 const FinderPage = () => {
+  const onClick = () => {
+    if (window.Worker) {
+      const worker = new Worker(
+        new URL("./seedFinderWorker.js", import.meta.url)
+      );
+      worker.onmessage = (event) => {
+        console.log("Got message from worker", event.data);
+      };
+    } else {
+      alert("Web Workers not supported");
+    }
+  };
   return (
     <Styles>
       <Typography variant="h4">BC Normal Seed Tracker</Typography>
@@ -25,6 +37,9 @@ const FinderPage = () => {
           </li>
         </ul>
       </Typography>
+      <button type="button" onClick={onClick}>
+        Start webworker
+      </button>
     </Styles>
   );
 };
