@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { generateWorkerInitializationMessage } from "./utils/seedFinder";
 import { CatseyeBannerData, NormalBannerData } from "./utils/bannerData";
+import FinderResults from "./FinderResults";
 
 const Styles = styled.div`
   * {
@@ -22,6 +23,16 @@ type WorkerMessage = {
 };
 
 const FinderPage = () => {
+  const [progresses, setProgresses] = useState<number[]>([]);
+  const setWorkerProgress = (worker: number, progress: number) => {
+    setProgresses((prevProgresses) => [
+      ...prevProgresses.slice(0, worker),
+      progress,
+      ...prevProgresses.slice(worker + 1),
+    ]);
+  };
+  const [seedsFound, setSeedsFound] = useState([]);
+
   const onClick = () => {
     const partialInitialMessage = generateWorkerInitializationMessage({
       banner: NormalBannerData,
@@ -52,6 +63,7 @@ const FinderPage = () => {
       }
 
       const workers = [];
+      setProgresses(chunks.map(() => 0));
       for (const [workerNumber, [startSeed, endSeed]] of chunks.entries()) {
         const initialMessage = {
           ...partialInitialMessage,
@@ -68,6 +80,7 @@ const FinderPage = () => {
             console.log(
               `Worker ${workerNumber} progress ${event.data.percentageSearched}%`
             );
+            setWorkerProgress(workerNumber, event.data.percentageSearched!);
           } else if (messageType === "seedFound") {
             console.log(`Worker ${workerNumber} found seed ${event.data.seed}`);
           }
@@ -93,6 +106,7 @@ const FinderPage = () => {
       <button type="button" onClick={onClick}>
         Start webworker
       </button>
+      <FinderResults workerProgresses={progresses} />
     </Styles>
   );
 };
