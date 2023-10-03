@@ -17,7 +17,9 @@ const RollTable = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const initialSeed = parseInt(urlParams.get("seed")!, 10) || 1;
   const numRolls = parseInt(urlParams.get("rolls")!, 10) || 100;
-  const allRolls = generateAllRolls(initialSeed, numRolls);
+  const superfeline = urlParams.get("sf") === "true";
+
+  const allRolls = generateAllRolls(initialSeed, numRolls, superfeline);
   console.log(allRolls);
 
   const trackARolls = allRolls.map((roll) => ({

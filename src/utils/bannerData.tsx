@@ -39,6 +39,38 @@ export const NormalBannerData: BannerData = {
   ],
 };
 
+export const NormalBannerPlusData: BannerData = {
+  name: "Normal+",
+  rateCumSum: [10000],
+  pools: [
+    {
+      rate: 10000,
+      units: [
+        "Cat",
+        "Tank Cat",
+        "Axe Cat",
+        "Gross Cat",
+        "Cow Cat",
+        "Bird Cat",
+        "Fish Cat",
+        "Lizard Cat",
+        "Titan Cat",
+        "Superfeline",
+        "Cat Cannon Attack",
+        "Cat Cannon Charge",
+        "Worker Cat Rate",
+        "Worker Cat Wallet",
+        "Base Defense",
+        "Research",
+        "Accounting",
+        "Study",
+        "Cat Energy",
+      ],
+      reroll: true,
+    },
+  ],
+};
+
 export const CatfruitBannerData: BannerData = {
   name: "Catfruit",
   rateCumSum: [400, 2400, 9400, 10000],

@@ -3,6 +3,7 @@ import {
   NormalBannerData,
   CatfruitBannerData,
   CatseyeBannerData,
+  NormalBannerPlusData,
 } from "./bannerData";
 
 export type Roll = {
@@ -103,9 +104,14 @@ const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
 
 export const generateAllRolls = (
   seed: number,
-  numRolls: number
+  numRolls: number,
+  useSuperfelineBanner: boolean
 ): BannerRolls[] => {
-  const banners = [NormalBannerData, CatfruitBannerData, CatseyeBannerData];
+  const banners = [
+    useSuperfelineBanner ? NormalBannerPlusData : NormalBannerData,
+    CatfruitBannerData,
+    CatseyeBannerData,
+  ];
   return banners.map((banner) => ({
     bannerName: banner.name,
     trackA: generateRolls(seed, numRolls, banner),
