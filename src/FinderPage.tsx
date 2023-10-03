@@ -137,6 +137,11 @@ const FinderPage = () => {
             reliable result.
           </li>
           <li>
+            Although all banners can be used for seed finding, the catseye
+            capsule tends to return a lot of false positives due to its small
+            pool. Using the normal capsule is recommended.
+          </li>
+          <li>
             Looking for the actual tracker? Try <a href="#">here</a>.
           </li>
         </ul>

@@ -55,30 +55,34 @@ const FinderResults = ({
       {seedsFound.length > 0 ? (
         <>
           <Typography variant="body1">
+            Notes:
+            <ul>
+              <li>
+                These seeds are from{" "}
+                <strong style={{ fontWeight: "bold", fontSize: "inherit" }}>
+                  before the pulls you entered above
+                </strong>
+                . Please use your pulls above to verify that the seed is correct
+                by using the tracker, and then update your seed accordingly.
+              </li>
+              <li>
+                Only one of these seeds will be correct, you can pull some more
+                and check the tracks to confirm which one it is.
+              </li>
+              <li>
+                It's also possible that none of the seeds are correct due to a
+                dupe rare.{" "}
+                <ul>
+                  <li>
+                    In that case you can just remove the first cat and try
+                    again.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <br />
             Found a total of {seedsFound.length} seed
             {seedsFound.length > 1 && "s"} matching your rolls.
-            <br />
-            Important: these seeds are from{" "}
-            <strong style={{ fontWeight: "bold" }}>
-              before the pulls you entered above
-            </strong>
-            . Please use your pulls above to verify that the seed is correct on
-            the tracker, and then update your seed accordingly.
-            {seedsFound.length > 1 && (
-              <>
-                <br />
-                Only one of these will be accurate, you can pull some more and
-                check the tracks to confirm which one it is.
-              </>
-            )}
-            {seedsFound.length > 200 && (
-              <>
-                <br />
-                Actually, over 200 seeds were found, so only the first 200 are
-                shown. Please add more cats to decrese the number of potential
-                seeds.
-              </>
-            )}
           </Typography>
           <ul>
             {seedsFound.map((seed) => {
