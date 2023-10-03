@@ -1,16 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
+
+import Page from "./Page";
 
 const App = () => {
-  return (
-    <div>
-      <h1>Index Page</h1>
-      <p>This is React + Typescript + eslint + prettier template.</p>
-      <a href="https://github.com/ragnar1904/react-ts-with-eslint-prettier">
-        Github
-      </a>
-    </div>
-  );
+  return <Page />;
 };
 
 ReactDOM.render(<App />, document.getElementById("root"));
