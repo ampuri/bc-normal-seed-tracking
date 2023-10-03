@@ -71,7 +71,7 @@ const FinderResults = ({
               </li>
               <li>
                 It's also possible that none of the seeds are correct due to a
-                dupe rare.{" "}
+                dupe.{" "}
                 <ul>
                   <li>
                     In that case you can just remove the first cat and try
