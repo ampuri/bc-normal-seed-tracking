@@ -45,7 +45,7 @@ const Page = () => {
           </ul>
           <li>
             Track switches work the exact same as rare banners. You can
-            strategically roll to hit or avoid a track switches.
+            strategically roll to hit or avoid a track switch.
           </li>
           <li>Clicking an entry will update your seed.</li>
         </ul>
