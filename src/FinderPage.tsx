@@ -33,7 +33,7 @@ const FinderPage = () => {
       <Typography variant="body1">
         <ul>
           <li>
-            Looking for the tracks? Try <a href="/">here</a>.
+            Looking for the tracks? Try <a href="#">here</a>.
           </li>
         </ul>
       </Typography>
