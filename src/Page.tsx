@@ -39,9 +39,6 @@ const Page = () => {
             You'll need to find your seed separately.
           </li>
           <li>
-            To input a seed, change the URL to have a parameter like ?seed=123
-          </li>
-          <li>
             Track switches work the exact same as rare banners. You can
             strategically roll to hit or avoid a track switches.
           </li>
