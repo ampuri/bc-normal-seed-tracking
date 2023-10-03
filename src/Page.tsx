@@ -38,6 +38,11 @@ const Page = () => {
             </strong>{" "}
             You'll need to find your seed separately.
           </li>
+          <ul>
+            <li>
+              Looking for your seed? Try <a href="/finder">here</a>.
+            </li>
+          </ul>
           <li>
             Track switches work the exact same as rare banners. You can
             strategically roll to hit or avoid a track switches.
