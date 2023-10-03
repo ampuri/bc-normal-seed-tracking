@@ -5,12 +5,18 @@ import {
   CatseyeBannerData,
 } from "./bannerData";
 
-type Roll = {
+export type Roll = {
   rarity: number;
   raritySeed: number;
   unitName: string;
   unitSeed: number;
   rerolledUnitName?: string;
+};
+
+type BannerRolls = {
+  bannerName: string;
+  trackA: Roll[];
+  trackB: Roll[];
 };
 
 const advanceSeed = (seed: number) => {
@@ -93,9 +99,13 @@ const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
   return rolls;
 };
 
-export const generateAllRolls = (seed: number, numRolls: number) => {
+export const generateAllRolls = (
+  seed: number,
+  numRolls: number
+): BannerRolls[] => {
   const banners = [NormalBannerData, CatfruitBannerData, CatseyeBannerData];
   return banners.map((banner) => ({
+    bannerName: banner.name,
     trackA: generateRolls(seed, numRolls, banner),
     trackB: generateRolls(advanceSeed(seed), numRolls, banner),
   }));
