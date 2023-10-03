@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
+import { generateWorkerInitializationMessage } from "./utils/seedFinder";
+import { CatseyeBannerData, NormalBannerData } from "./utils/bannerData";
 
 const Styles = styled.div`
   * {
@@ -15,13 +17,40 @@ const Styles = styled.div`
 
 const FinderPage = () => {
   const onClick = () => {
+    const partialInitialMessage = generateWorkerInitializationMessage({
+      banner: NormalBannerData,
+      rolls: [
+        "Gross Cat",
+        "Cat Energy",
+        "Titan Cat",
+        "Cat",
+        "Titan Cat",
+        "Research",
+        "Axe Cat",
+        "Cat Cannon Attack",
+        "Cat",
+        "Tank Cat",
+      ],
+    });
+
     if (window.Worker) {
-      const worker = new Worker(
-        new URL("./seedFinderWorker.js", import.meta.url)
-      );
-      worker.onmessage = (event) => {
-        console.log("Got message from worker", event.data);
-      };
+      const workers = [];
+      for (let i = 0; i < 1; i++) {
+        const initialMessage = {
+          ...partialInitialMessage,
+          workerNumber: i,
+          startSeed: 3356970559,
+          endSeed: 3356970559 + 3,
+        };
+        const worker = new Worker(
+          new URL("./seedFinderWorker.js", import.meta.url)
+        );
+        worker.onmessage = (event) => {
+          console.log(`Got message from worker ${i}: ${event.data}`);
+        };
+        worker.postMessage(initialMessage);
+        workers.push(worker);
+      }
     } else {
       alert("Web Workers not supported");
     }
