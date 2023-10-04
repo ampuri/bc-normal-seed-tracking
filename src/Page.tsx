@@ -26,7 +26,9 @@ const Page = () => {
   const superfelineToggledUrl = `?${superfelineToggledQueryParams.toString()}`;
   return (
     <Styles>
-      <Typography variant="h4">BC Normal Seed Tracker</Typography>
+      <Typography variant="h4">
+        BC Normal Seed Tracker <a href="#credits">[Credits]</a>
+      </Typography>
       <Typography variant="h6">About this tool</Typography>
       <Typography variant="body1">
         <ul>

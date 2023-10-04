@@ -20,7 +20,6 @@ const RollTable = () => {
   const superfeline = urlParams.get("sf") === "true";
 
   const allRolls = generateAllRolls(initialSeed, numRolls, superfeline);
-  console.log(allRolls);
 
   const trackARolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,

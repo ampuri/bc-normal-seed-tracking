@@ -19,10 +19,6 @@ const Styles = styled.div`
     line-height: 1.43;
     letter-spacing: 0.01071em;
   }
-
-  strong {
-    font-weight: bold;
-  }
 `;
 
 type WorkerMessage = {
@@ -58,7 +54,7 @@ const FinderPage = () => {
   }[banner];
   const bannerPool = bannerObj.pools.flatMap((pool) => pool.units);
 
-  const [progresses, setProgresses] = useState<number[]>([100]);
+  const [progresses, setProgresses] = useState<number[]>([]);
   const setWorkerProgress = (worker: number, progress: number) => {
     setProgresses((prevProgresses) => [
       ...prevProgresses.slice(0, worker),
@@ -66,7 +62,7 @@ const FinderPage = () => {
       ...prevProgresses.slice(worker + 1),
     ]);
   };
-  const [seedsFound, setSeedsFound] = useState<number[]>([1]);
+  const [seedsFound, setSeedsFound] = useState<number[]>([]);
   const isSearching = progresses.length > 0 && progresses.some((p) => p < 100);
   const startedAndFinishedSearching = progresses.length > 0 && !isSearching;
 
@@ -120,7 +116,9 @@ const FinderPage = () => {
   };
   return (
     <Styles>
-      <Typography variant="h4">BC Normal Seed Tracker</Typography>
+      <Typography variant="h4">
+        BC Normal Seed Tracker <a href="#credits">[Credits]</a>
+      </Typography>
       <Typography variant="h6">About this tool</Typography>
       <Typography variant="body1">
         <ul>

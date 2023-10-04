@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Typography } from "@mui/material";
+import { Typography, css } from "@mui/material";
 import React from "react";
 import { BannerData, NormalBannerPlusData } from "./utils/bannerData";
 import {
@@ -25,6 +25,13 @@ const RowContainer = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 6px;
+`;
+
+// Don't ask
+const UlWithStrong = styled.ul`
+  strong {
+    font-weight: bold;
+  }
 `;
 
 const FinderResults = ({
@@ -87,7 +94,7 @@ const FinderResults = ({
             Found a total of {seedsFound.length} seed
             {seedsFound.length > 1 && "s"} matching your rolls.{" "}
           </Typography>
-          <ul>
+          <UlWithStrong>
             {seedsFound.map((seed, i) => {
               const [seedAfterRolls, nextRollIsReroll] =
                 generateRollsLightweight(seed, numPulls, bannerData);
@@ -138,7 +145,7 @@ const FinderResults = ({
                 </li>
               );
             })}
-          </ul>
+          </UlWithStrong>
         </>
       ) : (
         <Typography variant="body1">
