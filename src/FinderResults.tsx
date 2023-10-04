@@ -1,6 +1,11 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import React from "react";
+import { BannerData, NormalBannerPlusData } from "./utils/bannerData";
+import {
+  generateRollsLightweight,
+  getTrackUrlWithSeedQueryParam,
+} from "./utils/seed";
 
 const ProgressBarContainer = styled.div`
   width: 100%;
@@ -26,14 +31,19 @@ const FinderResults = ({
   workerProgresses,
   seedsFound,
   isSearching,
+  bannerData,
+  numPulls,
 }: {
   workerProgresses: number[];
   seedsFound: number[];
   isSearching: boolean;
+  bannerData: BannerData;
+  numPulls: number;
 }) => {
   if (seedsFound.length > 200) {
     seedsFound = seedsFound.slice(0, 200);
   }
+  const usedSuperfelineBanner = bannerData === NormalBannerPlusData;
   return isSearching ? (
     <div>
       <Typography variant="body1">Searching...</Typography>
@@ -51,27 +61,20 @@ const FinderResults = ({
       })}
     </div>
   ) : (
-    <div>
+    <div style={{ marginBottom: "24px" }}>
       {seedsFound.length > 0 ? (
         <>
           <Typography variant="body1">
             Notes:
             <ul>
               <li>
-                These seeds are from{" "}
-                <strong style={{ fontWeight: "bold", fontSize: "inherit" }}>
-                  before the pulls you entered above
-                </strong>
-                . Please use your pulls above to verify that the seed is correct
-                by using the tracker, and then update your seed accordingly.
-              </li>
-              <li>
-                Only one of these seeds will be correct, you can pull some more
-                and check the tracks to confirm which one it is.
+                If there are multiple seeds found, only one will be correct, you
+                can pull some more and check the tracks to confirm which one it
+                is.
               </li>
               <li>
                 It's also possible that none of the seeds are correct due to a
-                dupe.{" "}
+                dupe.
                 <ul>
                   <li>
                     In that case you can just remove the first cat and try
@@ -82,16 +85,56 @@ const FinderResults = ({
             </ul>
             <br />
             Found a total of {seedsFound.length} seed
-            {seedsFound.length > 1 && "s"} matching your rolls.
+            {seedsFound.length > 1 && "s"} matching your rolls.{" "}
           </Typography>
           <ul>
-            {seedsFound.map((seed) => {
-              const searchParams = new URLSearchParams(window.location.search);
-              searchParams.set("seed", seed.toString());
-              const trackLink = `?${searchParams.toString()}#`;
+            {seedsFound.map((seed, i) => {
+              const [seedAfterRolls, nextRollIsReroll] =
+                generateRollsLightweight(seed, numPulls, bannerData);
               return (
                 <li>
-                  {seed}: <a href={trackLink}>Track link for {seed}</a>
+                  <strong>Seed {i + 1}</strong>
+                  <ul>
+                    <li>
+                      <strong>Before</strong> doing the {numPulls} pulls:{" "}
+                      <a
+                        href={getTrackUrlWithSeedQueryParam(
+                          seed,
+                          usedSuperfelineBanner
+                        )}
+                      >
+                        {seed}
+                      </a>
+                    </li>
+                    <li>
+                      <strong>After</strong> doing the {numPulls} pulls:{" "}
+                      <a
+                        href={getTrackUrlWithSeedQueryParam(
+                          seedAfterRolls,
+                          usedSuperfelineBanner
+                        )}
+                      >
+                        {seedAfterRolls}
+                      </a>
+                    </li>
+                    {nextRollIsReroll && (
+                      <li>
+                        <strong>Important:</strong> For this seed, the next roll
+                        is detected to be a <i>dupe track switch</i>.
+                        <ul>
+                          <li>
+                            The tracker <i>doesn't account for this</i> if you
+                            use the <strong>After</strong> link, so it will
+                            incorrectly show you proceeding along track A.
+                          </li>
+                          <li>
+                            Instead, you should use the <strong>Before</strong>{" "}
+                            link and update your seed manually.
+                          </li>
+                        </ul>
+                      </li>
+                    )}
+                  </ul>
                 </li>
               );
             })}

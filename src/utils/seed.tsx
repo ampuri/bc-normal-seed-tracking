@@ -59,6 +59,56 @@ const getUnit = ({
   return [seedMod, units[seedMod]];
 };
 
+export const getTrackUrlWithSeedQueryParam = (
+  seed: number,
+  superfeline: boolean
+) => {
+  const queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("seed", seed.toString());
+  if (superfeline) {
+    queryParams.set("sf", superfeline.toString());
+  }
+  return `?${queryParams.toString()}#`;
+};
+
+export const generateRollsLightweight = (
+  seed: number,
+  numRolls: number,
+  banner: BannerData
+): [number, boolean] => {
+  let lastRoll = "";
+  let finalRollSeed = 0;
+  let finalRollIsReroll = false;
+  // Roll to numRolls + 1 to check if the next one is a rare dupe,but return the seed at numRolls
+  for (let i = 0; i < numRolls + 1; i++) {
+    if (i === numRolls) {
+      finalRollSeed = seed;
+    }
+    seed = advanceSeed(seed);
+    const rarity = getRarity({ seed, banner });
+
+    seed = advanceSeed(seed);
+    let [unitId, unitName] = getUnit({ seed, rarity, banner });
+    if (unitName === lastRoll && banner.pools[rarity].reroll) {
+      if (i === numRolls) {
+        finalRollIsReroll = true;
+      }
+      seed = advanceSeed(seed);
+      const [_, rerolledUnitName] = getUnit({
+        seed,
+        rarity,
+        removedIndex: unitId,
+        banner,
+      });
+      lastRoll = rerolledUnitName;
+    } else {
+      lastRoll = unitName;
+    }
+  }
+
+  return [finalRollSeed, finalRollIsReroll];
+};
+
 const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
   const rolls: Roll[] = [];
 

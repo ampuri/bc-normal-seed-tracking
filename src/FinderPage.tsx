@@ -19,6 +19,10 @@ const Styles = styled.div`
     line-height: 1.43;
     letter-spacing: 0.01071em;
   }
+
+  strong {
+    font-weight: bold;
+  }
 `;
 
 type WorkerMessage = {
@@ -54,7 +58,7 @@ const FinderPage = () => {
   }[banner];
   const bannerPool = bannerObj.pools.flatMap((pool) => pool.units);
 
-  const [progresses, setProgresses] = useState<number[]>([]);
+  const [progresses, setProgresses] = useState<number[]>([100]);
   const setWorkerProgress = (worker: number, progress: number) => {
     setProgresses((prevProgresses) => [
       ...prevProgresses.slice(0, worker),
@@ -62,7 +66,7 @@ const FinderPage = () => {
       ...prevProgresses.slice(worker + 1),
     ]);
   };
-  const [seedsFound, setSeedsFound] = useState<number[]>([]);
+  const [seedsFound, setSeedsFound] = useState<number[]>([1]);
   const isSearching = progresses.length > 0 && progresses.some((p) => p < 100);
   const startedAndFinishedSearching = progresses.length > 0 && !isSearching;
 
@@ -215,6 +219,8 @@ const FinderPage = () => {
             workerProgresses={progresses}
             seedsFound={seedsFound}
             isSearching={isSearching}
+            bannerData={bannerObj}
+            numPulls={userRolls.filter(Boolean).length}
           />
         </>
       )}

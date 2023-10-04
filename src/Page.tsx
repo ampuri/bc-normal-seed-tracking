@@ -24,7 +24,6 @@ const Page = () => {
   );
   superfelineToggledQueryParams.set("sf", (!superfeline).toString());
   const superfelineToggledUrl = `?${superfelineToggledQueryParams.toString()}`;
-
   return (
     <Styles>
       <Typography variant="h4">BC Normal Seed Tracker</Typography>
@@ -74,10 +73,13 @@ const Page = () => {
         Currently showing Normal Capsules
         {superfeline ? "+ (with Superfeline)" : ""}
       </Typography>
-      <a href={superfelineToggledUrl}>
+      <button
+        type="button"
+        onClick={() => (window.location.href = superfelineToggledUrl)}
+      >
         Switch to Normal Capsules
         {!superfeline ? "+ (with Superfeline)" : ""}
-      </a>
+      </button>
       <Typography variant="body1">&nbsp;</Typography>
       <RollTable />
     </Styles>
