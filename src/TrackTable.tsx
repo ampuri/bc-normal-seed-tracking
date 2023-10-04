@@ -86,6 +86,8 @@ const TrackTable = ({
                 {row.map((unit, j) => {
                   const urlParams = new URLSearchParams(window.location.search);
                   urlParams.set("seed", unit.unitSeed.toString());
+                  urlParams.set("lastCat", unit.unitName);
+                  urlParams.set("lastBanner", rolls[j].bannerName);
                   const canonicalDestination = `?${urlParams.toString()}`;
                   return (
                     <TopTd key={j} rarity={unit.rarity}>
@@ -102,6 +104,8 @@ const TrackTable = ({
                 {row.map((unit, j) => {
                   const urlParams = new URLSearchParams(window.location.search);
                   urlParams.set("seed", unit.unitSeed.toString());
+                  urlParams.set("lastCat", unit.unitName);
+                  urlParams.set("lastBanner", rolls[j].bannerName);
                   const canonicalDestination = `?${urlParams.toString()}`;
 
                   const rerollUrlParams = new URLSearchParams(
@@ -111,6 +115,8 @@ const TrackTable = ({
                     "seed",
                     unit.rerolledUnitSeed?.toString()
                   );
+                  rerollUrlParams.set("lastCat", unit.rerolledUnitName);
+                  rerollUrlParams.set("lastBanner", rolls[j].bannerName);
                   const rerollDestination = `?${rerollUrlParams.toString()}`;
 
                   const rerolledEntry =

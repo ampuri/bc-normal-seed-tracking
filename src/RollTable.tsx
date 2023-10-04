@@ -18,8 +18,16 @@ const RollTable = () => {
   const initialSeed = parseInt(urlParams.get("seed")!, 10) || 1;
   const numRolls = parseInt(urlParams.get("rolls")!, 10) || 100;
   const superfeline = urlParams.get("sf") === "true";
+  const lastCat = urlParams.get("lastCat") || "";
+  const lastBanner = urlParams.get("lastBanner") || "";
 
-  const allRolls = generateAllRolls(initialSeed, numRolls, superfeline);
+  const allRolls = generateAllRolls(
+    initialSeed,
+    numRolls,
+    superfeline,
+    lastCat,
+    lastBanner
+  );
 
   const trackARolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,

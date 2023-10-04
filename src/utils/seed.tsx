@@ -79,7 +79,7 @@ export const generateRollsLightweight = (
   let lastRoll = "";
   let finalRollSeed = 0;
   let finalRollIsReroll = false;
-  // Roll to numRolls + 1 to check if the next one is a rare dupe,but return the seed at numRolls
+  // Roll to numRolls + 1 to check if the next one is a rare dupe, but return the seed at numRolls
   for (let i = 0; i < numRolls + 1; i++) {
     if (i === numRolls) {
       finalRollSeed = seed;
@@ -109,10 +109,15 @@ export const generateRollsLightweight = (
   return [finalRollSeed, finalRollIsReroll];
 };
 
-const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
+const generateRolls = (
+  seed: number,
+  numRolls: number,
+  banner: BannerData,
+  lastCat: string = ""
+) => {
   const rolls: Roll[] = [];
 
-  let lastRoll = "";
+  let lastRoll = lastCat;
   for (let i = 0; i < numRolls; i++) {
     seed = advanceSeed(seed);
     const raritySeed = seed;
@@ -155,7 +160,9 @@ const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
 export const generateAllRolls = (
   seed: number,
   numRolls: number,
-  useSuperfelineBanner: boolean
+  useSuperfelineBanner: boolean,
+  lastCat: string,
+  lastBanner: string
 ): BannerRolls[] => {
   const banners = [
     useSuperfelineBanner ? NormalBannerPlusData : NormalBannerData,
@@ -164,7 +171,12 @@ export const generateAllRolls = (
   ];
   return banners.map((banner) => ({
     bannerName: banner.name,
-    trackA: generateRolls(seed, numRolls, banner),
-    trackB: generateRolls(advanceSeed(seed), numRolls, banner),
+    trackA: generateRolls(
+      seed,
+      numRolls,
+      banner,
+      lastBanner === banner.name ? lastCat : ""
+    ),
+    trackB: generateRolls(advanceSeed(seed), numRolls, banner, ""),
   }));
 };
