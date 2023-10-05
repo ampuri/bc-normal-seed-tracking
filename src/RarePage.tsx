@@ -188,8 +188,9 @@ const RarePage = () => {
         <ul>
           <li>Pull 8-10 times on a banner.</li>
           <li>
-            Navigate to Godfat's seed tracking website and select the banner you
-            pulled on.
+            Navigate to Godfat's{" "}
+            <a href="https://bc.godfat.org/?seed=1">seed tracking website</a>{" "}
+            and select the banner you pulled on.
           </li>
           <li>
             <img
