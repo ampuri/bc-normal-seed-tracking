@@ -5,6 +5,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 import Page from "./Page";
 import FinderPage from "./FinderPage";
 import CreditsPage from "./CreditsPage";
+import RarePage from "./RarePage";
 
 const router = createHashRouter([
   {
@@ -18,6 +19,10 @@ const router = createHashRouter([
   {
     path: "/credits",
     element: <CreditsPage />,
+  },
+  {
+    path: "/rare",
+    element: <RarePage />,
   },
 ]);
 

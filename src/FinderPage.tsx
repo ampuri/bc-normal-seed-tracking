@@ -21,7 +21,7 @@ const Styles = styled.div`
   }
 `;
 
-type WorkerMessage = {
+export type WorkerMessage = {
   type: "progress" | "seedFound";
   percentageSearched?: number;
   seed?: number;
