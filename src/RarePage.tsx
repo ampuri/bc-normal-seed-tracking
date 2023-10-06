@@ -42,8 +42,8 @@ const parseBannerData = (bannerData: string): BannerData => {
       // Parse units
       const parsedUnits = cats
         .trim()
-        .split(", ")
-        .map((unit) => unit.slice(unit.indexOf(" ") + 1));
+        .split(/, \d+/)
+        .map((unit) => unit.trim());
       return {
         rate: raritySlots,
         units: parsedUnits,
