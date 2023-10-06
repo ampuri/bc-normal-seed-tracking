@@ -150,7 +150,7 @@ const FinderResults = ({
       ) : (
         <Typography variant="body1">
           Couldn't find your seed. This could be because of a dupe - please
-          remove the first entry and try again.
+          remove the first cat and try again.
         </Typography>
       )}
     </div>

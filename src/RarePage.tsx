@@ -152,6 +152,12 @@ const RarePage = () => {
       <Typography variant="h4">
         BC [Rare] Seed Finder <a href="#credits">[Credits]</a>
       </Typography>
+      <Typography variant="h6">READ THIS FIRST</Typography>
+      <Typography variant="h5">
+        YOU DO NOT NEED A SEED TO USE THIS TOOL.
+        <br />
+        THIS TOOL IS FOR FINDING YOUR SEED.
+      </Typography>
       <Typography variant="h6">Background</Typography>
       <ul>
         <li>
@@ -189,8 +195,23 @@ const RarePage = () => {
           <li>Pull 8-10 times on a banner.</li>
           <li>
             Navigate to Godfat's{" "}
-            <a href="https://bc.godfat.org/?seed=1">seed tracking website</a>{" "}
+            <a href="https://bc.godfat.org/?seed=1&details=true">
+              seed tracking website
+            </a>{" "}
             and select the banner you pulled on.
+          </li>
+          <li>
+            <strong style={{ fontWeight: "bold" }}>
+              You do not need a seed to do this step.
+            </strong>
+          </li>
+          <li>
+            <strong style={{ fontWeight: "bold" }}>
+              There's a seed in the image below, but that's just a random
+              placeholder. Just go to{" "}
+              <a href="https://bc.godfat.org/?seed=1&details=true">this link</a>{" "}
+              and follow the instructions below.
+            </strong>
           </li>
           <li>
             <img
