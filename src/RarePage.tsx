@@ -19,7 +19,7 @@ const Styles = styled.div`
 `;
 
 const parseBannerData = (bannerData: string): BannerData => {
-  const splitBannerData = bannerData.split("\n");
+  const splitBannerData = bannerData.split("\n").map((line) => line.trim());
   const relevantBannerData = splitBannerData.filter(
     (line) =>
       line.startsWith("Rare:") ||
@@ -118,6 +118,7 @@ const RarePage = () => {
 
       const workers = [];
       setProgresses(chunks.map(() => 0));
+      setSeedsFound([]);
       for (const [workerNumber, [startSeed, endSeed]] of chunks.entries()) {
         const initialMessage = {
           ...partialInitialMessage,
@@ -221,7 +222,7 @@ const RarePage = () => {
           </li>
           <li>
             Check the <span style={{ border: "3px solid red" }}>Details</span>{" "}
-            box to bring up the in-depth{" "}
+            box, if not already checked, to bring up the in-depth{" "}
             <span style={{ border: "3px solid #00A2E8" }}>
               rate information
             </span>
