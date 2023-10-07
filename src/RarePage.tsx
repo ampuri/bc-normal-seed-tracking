@@ -221,6 +221,12 @@ const RarePage = () => {
             />
           </li>
           <li>
+            Select the{" "}
+            <span style={{ border: "3px solid #22B14C" }}>
+              banner you rolled on.
+            </span>
+          </li>
+          <li>
             Check the <span style={{ border: "3px solid red" }}>Details</span>{" "}
             box, if not already checked, to bring up the in-depth{" "}
             <span style={{ border: "3px solid #00A2E8" }}>
