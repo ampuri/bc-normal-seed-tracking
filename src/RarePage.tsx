@@ -42,6 +42,7 @@ const parseBannerData = (bannerData: string): BannerData => {
       // Parse units
       const parsedUnits = cats
         .trim()
+        .slice(1)
         .split(/, \d+/)
         .map((unit) => unit.trim());
       return {
