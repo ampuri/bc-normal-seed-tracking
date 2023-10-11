@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import RollTable from "./RollTable";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
+import { getQueryParam, setQueryParam } from "./utils/queryParams";
+import { AllBanners } from "./utils/bannerData";
 
 const Styles = styled.div`
   * {
@@ -16,14 +18,9 @@ const Styles = styled.div`
 
 const Page = () => {
   // We'll just put all our controls here because we're lazy
-  const queryParams = new URLSearchParams(window.location.search);
-  const [seedInput, setSeedInput] = useState(queryParams.get("seed") || "1");
-  const superfeline = queryParams.get("sf") === "true";
-  const superfelineToggledQueryParams = new URLSearchParams(
-    window.location.search
-  );
-  superfelineToggledQueryParams.set("sf", (!superfeline).toString());
-  const superfelineToggledUrl = `?${superfelineToggledQueryParams.toString()}`;
+  const [seedInput, setSeedInput] = useState(getQueryParam("seed"));
+  const selectedBanners = getQueryParam("banners").split(",") || [];
+
   return (
     <Styles>
       <Typography variant="h4">
@@ -71,17 +68,51 @@ const Page = () => {
           Update
         </button>
       </div>
-      <Typography variant="subtitle2">
-        Currently showing Normal Capsules
-        {superfeline ? "+ (with Superfeline)" : ""}
-      </Typography>
-      <button
-        type="button"
-        onClick={() => (window.location.href = superfelineToggledUrl)}
-      >
-        Switch to Normal Capsules
-        {!superfeline ? "+ (with Superfeline)" : ""}
-      </button>
+      <Typography variant="subtitle2">Rolls</Typography>
+      <div style={{ marginBottom: "4px" }}>
+        <select
+          style={{ marginRight: "4px" }}
+          onChange={(event) => setQueryParam("rolls", event.target.value)}
+        >
+          {[100, 200, 500, 999].map((numRolls) => (
+            <option
+              value={numRolls}
+              selected={getQueryParam("rolls") === numRolls.toString()}
+            >
+              {numRolls}
+            </option>
+          ))}
+        </select>
+      </div>
+      <Typography variant="subtitle2">Banners</Typography>
+      <div style={{ display: "flex", gap: "24px" }}>
+        {AllBanners.map((banner) => {
+          return (
+            <label style={{ display: "flex", alignItems: "center" }}>
+              <input
+                type="checkbox"
+                checked={selectedBanners.includes(banner.shortName)}
+                onClick={(event) => {
+                  let newSelectedBanners;
+                  if ((event.target as HTMLInputElement).checked) {
+                    newSelectedBanners = [
+                      ...selectedBanners,
+                      banner.shortName,
+                    ].sort();
+                  } else {
+                    newSelectedBanners = selectedBanners.filter(
+                      (bannerName) => bannerName !== banner.shortName
+                    );
+                  }
+                  setQueryParam("banners", newSelectedBanners.join(","));
+                }}
+                style={{ marginRight: "8px", width: "20px", height: "20px" }}
+              ></input>
+              <Typography variant="body1">{banner.name}</Typography>
+            </label>
+          );
+        })}
+      </div>
       <Typography variant="body1">&nbsp;</Typography>
       <RollTable />
     </Styles>

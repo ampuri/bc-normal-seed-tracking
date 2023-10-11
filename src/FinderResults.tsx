@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Typography, css } from "@mui/material";
+import { Typography } from "@mui/material";
 import React from "react";
-import { BannerData, NormalBannerPlusData } from "./utils/bannerData";
+import { BannerData } from "./utils/bannerData";
 import {
   generateRollsLightweight,
   getTrackUrlWithSeedQueryParam,
@@ -50,7 +50,6 @@ const FinderResults = ({
   if (seedsFound.length > 200) {
     seedsFound = seedsFound.slice(0, 200);
   }
-  const usedSuperfelineBanner = bannerData === NormalBannerPlusData;
   return isSearching ? (
     <div>
       <Typography variant="body1">Searching...</Typography>
@@ -104,23 +103,11 @@ const FinderResults = ({
                   <ul>
                     <li>
                       <strong>Before</strong> doing the {numPulls} pulls:{" "}
-                      <a
-                        href={getTrackUrlWithSeedQueryParam(
-                          seed,
-                          usedSuperfelineBanner
-                        )}
-                      >
-                        {seed}
-                      </a>
+                      <a href={getTrackUrlWithSeedQueryParam(seed)}>{seed}</a>
                     </li>
                     <li>
                       <strong>After</strong> doing the {numPulls} pulls:{" "}
-                      <a
-                        href={getTrackUrlWithSeedQueryParam(
-                          seedAfterRolls,
-                          usedSuperfelineBanner
-                        )}
-                      >
+                      <a href={getTrackUrlWithSeedQueryParam(seedAfterRolls)}>
                         {seedAfterRolls}
                       </a>
                     </li>

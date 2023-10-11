@@ -61,6 +61,7 @@ const parseBannerData = (bannerData: string): BannerData => {
 
   return {
     name: "Custom",
+    shortName: "c",
     rateCumSum,
     pools: bannerDataPoolsElements,
   };

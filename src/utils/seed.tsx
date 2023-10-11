@@ -4,7 +4,9 @@ import {
   CatfruitBannerData,
   CatseyeBannerData,
   NormalBannerPlusData,
+  AllBanners,
 } from "./bannerData";
+import { getQueryParam } from "./queryParams";
 
 export type Roll = {
   rarity: number;
@@ -59,15 +61,9 @@ const getUnit = ({
   return [seedMod, units[seedMod]];
 };
 
-export const getTrackUrlWithSeedQueryParam = (
-  seed: number,
-  superfeline: boolean
-) => {
+export const getTrackUrlWithSeedQueryParam = (seed: number) => {
   const queryParams = new URLSearchParams(window.location.search);
   queryParams.set("seed", seed.toString());
-  if (superfeline) {
-    queryParams.set("sf", superfeline.toString());
-  }
   return `?${queryParams.toString()}#`;
 };
 
@@ -160,15 +156,13 @@ const generateRolls = (
 export const generateAllRolls = (
   seed: number,
   numRolls: number,
-  useSuperfelineBanner: boolean,
   lastCat: string,
   lastBanner: string
 ): BannerRolls[] => {
-  const banners = [
-    useSuperfelineBanner ? NormalBannerPlusData : NormalBannerData,
-    CatfruitBannerData,
-    CatseyeBannerData,
-  ];
+  const selectedBanners = getQueryParam("banners").split(",");
+  const banners = AllBanners.filter((banner) =>
+    selectedBanners.includes(banner.shortName)
+  );
   return banners.map((banner) => ({
     bannerName: banner.name,
     trackA: generateRolls(

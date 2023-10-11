@@ -2,6 +2,7 @@ import React from "react";
 import { Roll, generateAllRolls } from "./utils/seed";
 import TrackTable from "./TrackTable";
 import styled from "@emotion/styled";
+import { getQueryParam } from "./utils/queryParams";
 
 export type BannerTrackRolls = {
   bannerName: string;
@@ -14,20 +15,12 @@ const Container = styled.div`
 `;
 
 const RollTable = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialSeed = parseInt(urlParams.get("seed")!, 10) || 1;
-  const numRolls = parseInt(urlParams.get("rolls")!, 10) || 100;
-  const superfeline = urlParams.get("sf") === "true";
-  const lastCat = urlParams.get("lastCat") || "";
-  const lastBanner = urlParams.get("lastBanner") || "";
+  const initialSeed = parseInt(getQueryParam("seed"), 10);
+  const numRolls = parseInt(getQueryParam("rolls"), 10);
+  const lastCat = getQueryParam("lastCat");
+  const lastBanner = getQueryParam("lastBanner");
 
-  const allRolls = generateAllRolls(
-    initialSeed,
-    numRolls,
-    superfeline,
-    lastCat,
-    lastBanner
-  );
+  const allRolls = generateAllRolls(initialSeed, numRolls, lastCat, lastBanner);
 
   const trackARolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,

@@ -1,5 +1,6 @@
 export type BannerData = {
   name: string;
+  shortName: string;
   rateCumSum: number[];
   pools: {
     rate: number;
@@ -10,6 +11,7 @@ export type BannerData = {
 
 export const NormalBannerData: BannerData = {
   name: "Normal",
+  shortName: "n",
   rateCumSum: [10000],
   pools: [
     {
@@ -41,6 +43,7 @@ export const NormalBannerData: BannerData = {
 
 export const NormalBannerPlusData: BannerData = {
   name: "Normal+",
+  shortName: "np",
   rateCumSum: [10000],
   pools: [
     {
@@ -73,6 +76,7 @@ export const NormalBannerPlusData: BannerData = {
 
 export const CatfruitBannerData: BannerData = {
   name: "Catfruit",
+  shortName: "cf",
   rateCumSum: [400, 2400, 9400, 10000],
   pools: [
     {
@@ -122,6 +126,7 @@ export const CatfruitBannerData: BannerData = {
 
 export const CatseyeBannerData: BannerData = {
   name: "Catseye",
+  shortName: "ce",
   rateCumSum: [500, 7400, 9400, 9900, 10000],
   pools: [
     {
@@ -151,3 +156,10 @@ export const CatseyeBannerData: BannerData = {
     },
   ],
 };
+
+export const AllBanners = [
+  NormalBannerData,
+  NormalBannerPlusData,
+  CatfruitBannerData,
+  CatseyeBannerData,
+];
