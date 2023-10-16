@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { generateWorkerInitializationMessage } from "./utils/seedFinder";
-import {
-  CatfruitBannerData,
-  CatseyeBannerData,
-  NormalBannerData,
-  NormalBannerPlusData,
-} from "./utils/bannerData";
+import { NormalBannerData, NormalBannerPlusData } from "./utils/bannerData";
 import FinderResults from "./FinderResults";
 
 const Styles = styled.div`
@@ -29,9 +24,7 @@ export type WorkerMessage = {
 
 const FinderPage = () => {
   // We'll just put all our controls here because we're lazy
-  const [banner, setBanner] = useState<
-    "normal" | "normalPlus" | "catfruit" | "catseye"
-  >("normal");
+  const [banner, setBanner] = useState<"normal" | "normalPlus">("normal");
   const [userRolls, setUserRolls] = useState<(string | null)[]>(
     Array(10).fill(null)
   );
@@ -49,8 +42,6 @@ const FinderPage = () => {
   const bannerObj = {
     normal: NormalBannerData,
     normalPlus: NormalBannerPlusData,
-    catfruit: CatfruitBannerData,
-    catseye: CatseyeBannerData,
   }[banner];
   const bannerPool = bannerObj.pools.flatMap((pool) => pool.units);
 
@@ -142,11 +133,6 @@ const FinderPage = () => {
             reliable result.
           </li>
           <li>
-            Although all banners can be used for seed finding, the catseye
-            capsule tends to return a lot of false positives due to its small
-            pool. Using the normal capsule is recommended.
-          </li>
-          <li>
             Looking for the actual tracker? Try <a href="#">here</a>.
           </li>
         </ul>
@@ -157,9 +143,7 @@ const FinderPage = () => {
         <select
           id="banner"
           onChange={(e) => {
-            setBanner(
-              e.target.value as "normal" | "normalPlus" | "catfruit" | "catseye"
-            );
+            setBanner(e.target.value as "normal" | "normalPlus");
             setUserRolls(Array(10).fill(null));
           }}
         >
@@ -167,8 +151,6 @@ const FinderPage = () => {
           <option value="normalPlus">
             Normal Capsules+ (with Superfeline)
           </option>
-          <option value="catfruit">Catfruit Capsules</option>
-          <option value="catseye">Catseye Capsules</option>
         </select>
       </div>
       <Typography variant="subtitle2">Rolls</Typography>
