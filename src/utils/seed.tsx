@@ -15,6 +15,7 @@ export type Roll = {
   unitSeed: number;
   rerolledUnitName?: string;
   rerolledUnitSeed?: number;
+  rerolledTimes?: number;
 };
 
 type BannerRolls = {
@@ -41,24 +42,27 @@ const getUnit = ({
   seed,
   rarity,
   banner,
-  removedIndex = -1,
+  removedIndices = [],
 }: {
   seed: number;
   rarity: number;
   banner: BannerData;
-  removedIndex?: number;
+  removedIndices?: number[];
 }): [number, string] => {
   const units = banner.pools[rarity].units;
-  let seedMod;
-  if (removedIndex === -1) {
-    seedMod = seed % units.length;
+  if (removedIndices.length === 0) {
+    const seedMod = seed % units.length;
+    return [seedMod, units[seedMod]];
   } else {
-    seedMod = seed % (units.length - 1);
-    if (seedMod >= removedIndex) {
-      seedMod++;
-    }
+    const numUnitsInPool = units.length - removedIndices.length;
+    const seedMod = seed % numUnitsInPool;
+    const numRemovedIndicesBeforeSeedMod = removedIndices.filter(
+      (index) => index <= seedMod
+    ).length;
+    const rerolledSeedMod = seedMod + numRemovedIndicesBeforeSeedMod;
+    // Return the original seedMod as the index to eliminate, but the cat from rerolledSeedMod
+    return [seedMod, units[rerolledSeedMod]];
   }
-  return [seedMod, units[seedMod]];
 };
 
 export const getTrackUrlWithSeedQueryParam = (seed: number) => {
@@ -67,6 +71,8 @@ export const getTrackUrlWithSeedQueryParam = (seed: number) => {
   return `?${queryParams.toString()}#`;
 };
 
+// TODO: Doesn't support lucky ticket and lucky tichet G which have multiple dupe rares in the pool.
+// Should be fine for now since you can't seed find with those banners, and this fn is only called in Finder
 export const generateRollsLightweight = (
   seed: number,
   numRolls: number,
@@ -93,7 +99,7 @@ export const generateRollsLightweight = (
       const [_, rerolledUnitName] = getUnit({
         seed,
         rarity,
-        removedIndex: unitId,
+        removedIndices: [unitId],
         banner,
       });
       lastRoll = rerolledUnitName;
@@ -122,29 +128,39 @@ const generateRolls = (
     seed = advanceSeed(seed);
     const unitSeed = seed;
     let [unitId, unitName] = getUnit({ seed: unitSeed, rarity, banner });
-    // If there's a dupe that should be rerolled, simulate the reroll but don't actually do it
-    if (unitName === lastRoll && banner.pools[rarity].reroll) {
-      const nextSeed = advanceSeed(seed);
-      const [_, rerolledUnitName] = getUnit({
-        seed: nextSeed,
-        rarity,
-        removedIndex: unitId,
-        banner,
-      });
+    if (unitName !== lastRoll || !banner.pools[rarity].reroll) {
       rolls.push({
         rarity,
         raritySeed,
         unitName,
         unitSeed,
-        rerolledUnitName,
-        rerolledUnitSeed: nextSeed,
       });
     } else {
+      // If there's a dupe that should be rerolled, simulate the reroll but don't actually do it
+      let tmpSeed = unitSeed;
+      let tmpUnitName = unitName;
+      const tmpRemovedIndices = [unitId];
+      let rerollTimes = 0;
+      while (tmpUnitName === lastRoll && banner.pools[rarity].reroll) {
+        rerollTimes++;
+        tmpSeed = advanceSeed(tmpSeed);
+        const [nextUnitId, rerolledUnitName] = getUnit({
+          seed: tmpSeed,
+          rarity,
+          removedIndices: tmpRemovedIndices,
+          banner,
+        });
+        tmpUnitName = rerolledUnitName;
+        tmpRemovedIndices.push(nextUnitId);
+      }
       rolls.push({
         rarity,
         raritySeed,
         unitName,
         unitSeed,
+        rerolledUnitName: tmpUnitName,
+        rerolledUnitSeed: tmpSeed,
+        rerolledTimes: rerollTimes,
       });
     }
     lastRoll = unitName; // Not rerolledUnitName because a reroll would take us off this track

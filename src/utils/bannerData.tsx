@@ -157,9 +157,85 @@ export const CatseyeBannerData: BannerData = {
   ],
 };
 
+export const LuckyTicketBannerData: BannerData = {
+  name: "Lucky Ticket",
+  shortName: "lt",
+  rateCumSum: [7400, 9500, 10000],
+  pools: [
+    {
+      rate: 7400,
+      units: [
+        "Li'l Titan Cat",
+        "Li'l Lizard Cat",
+        "Li'l Fish Cat",
+        "Li'l Bird Cat",
+        "Li'l Cow Cat",
+        "Li'l Gross Cat",
+        "Li'l Axe Cat",
+        "Li'l Tank Cat",
+        "Li'l Cat",
+        "Speed Up",
+        "Speed Up",
+        "Speed Up",
+        "Cat CPU",
+        "Cat CPU",
+        "10K XP",
+        "10K XP",
+        "10K XP",
+        "30K XP",
+        "30K XP",
+        "30K XP",
+      ],
+      reroll: true,
+    },
+    {
+      rate: 2100,
+      units: ["Rich Cat", "Cat Jobs", "Sniper the Cat"],
+      reroll: false,
+    },
+    {
+      rate: 500,
+      units: ["Treasure Radar"],
+      reroll: false,
+    },
+  ],
+};
+
+export const LuckyTicketGBannerData: BannerData = {
+  name: "Lucky Ticket G",
+  shortName: "ltg",
+  rateCumSum: [5100, 8600, 10000],
+  pools: [
+    {
+      rate: 5100,
+      units: [
+        "Catamin A",
+        "Catamin A",
+        "Catamin A",
+        "100K XP",
+        "100K XP",
+        "100K XP",
+      ],
+      reroll: true,
+    },
+    {
+      rate: 3500,
+      units: ["Catamin B", "Catamin B", "Catamin B", "500K XP"],
+      reroll: false,
+    },
+    {
+      rate: 1400,
+      units: ["Catamin C", "Catamin C", "Catamin C", "1M XP"],
+      reroll: false,
+    },
+  ],
+};
+
 export const AllBanners = [
   NormalBannerData,
   NormalBannerPlusData,
   CatfruitBannerData,
   CatseyeBannerData,
+  LuckyTicketBannerData,
+  LuckyTicketGBannerData,
 ];

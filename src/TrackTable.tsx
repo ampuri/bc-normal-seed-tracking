@@ -49,6 +49,29 @@ const BottomTd = styled(Td)`
   padding: 0 8px;
 `;
 
+const calculateRerollDestination = ({
+  currentNumber,
+  track,
+  rerolledUnitName,
+  rerolledTimes,
+}: {
+  currentNumber: number;
+  track: "A" | "B";
+  rerolledUnitName: string;
+  rerolledTimes: number;
+}) => {
+  const nextNumber = currentNumber + 1;
+  const oppositeTrack = track === "A" ? "B" : "A";
+  const switchingOntoOppositeTrack = rerolledTimes % 2 === 1;
+  const bToAFactor = track === "B" && switchingOntoOppositeTrack ? 1 : 0;
+  const additionalMovement = Math.floor(rerolledTimes / 2);
+  const destinationNumber = nextNumber + bToAFactor + additionalMovement;
+  const destinationTrack = switchingOntoOppositeTrack ? oppositeTrack : track;
+  return track === "A"
+    ? `${rerolledUnitName} -> ${destinationNumber}${destinationTrack}`
+    : `<- ${destinationNumber}${destinationTrack} ${rerolledUnitName}`;
+};
+
 const TrackTable = ({
   rolls,
   track,
@@ -119,14 +142,16 @@ const TrackTable = ({
                   rerollUrlParams.set("lastBanner", rolls[j].bannerName);
                   const rerollDestination = `?${rerollUrlParams.toString()}`;
 
-                  const rerolledEntry =
-                    track === "A"
-                      ? `${unit.rerolledUnitName} -> ${i + 2}B`
-                      : `<- ${i + 3}A ${unit.rerolledUnitName}`;
+                  const rerollDestinationText = calculateRerollDestination({
+                    currentNumber: i + 1,
+                    track,
+                    rerolledUnitName: unit.rerolledUnitName,
+                    rerolledTimes: unit.rerolledTimes,
+                  });
                   return (
                     <BottomTd key={j} rarity={unit.rarity}>
                       {unit.rerolledUnitName ? (
-                        <a href={rerollDestination}>{rerolledEntry}</a>
+                        <a href={rerollDestination}>{rerollDestinationText}</a>
                       ) : (
                         <a href={canonicalDestination}>{unit.unitName}</a>
                       )}
