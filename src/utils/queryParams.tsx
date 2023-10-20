@@ -3,7 +3,6 @@ const DEFAULTS = {
   banners: "n,ce",
   rolls: "100",
   lastCat: "",
-  lastBanner: "",
 };
 
 export const getQueryParam = (key: keyof typeof DEFAULTS): string => {

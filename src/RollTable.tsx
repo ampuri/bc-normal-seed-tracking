@@ -18,9 +18,8 @@ const RollTable = () => {
   const initialSeed = parseInt(getQueryParam("seed"), 10);
   const numRolls = parseInt(getQueryParam("rolls"), 10);
   const lastCat = getQueryParam("lastCat");
-  const lastBanner = getQueryParam("lastBanner");
 
-  const allRolls = generateAllRolls(initialSeed, numRolls, lastCat, lastBanner);
+  const allRolls = generateAllRolls(initialSeed, numRolls, lastCat);
 
   const trackARolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,

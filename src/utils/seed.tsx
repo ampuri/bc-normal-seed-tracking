@@ -172,8 +172,7 @@ const generateRolls = (
 export const generateAllRolls = (
   seed: number,
   numRolls: number,
-  lastCat: string,
-  lastBanner: string
+  lastCat: string
 ): BannerRolls[] => {
   const selectedBanners = getQueryParam("banners").split(",");
   const banners = AllBanners.filter((banner) =>
@@ -181,12 +180,7 @@ export const generateAllRolls = (
   );
   return banners.map((banner) => ({
     bannerName: banner.name,
-    trackA: generateRolls(
-      seed,
-      numRolls,
-      banner,
-      lastBanner === banner.name ? lastCat : ""
-    ),
+    trackA: generateRolls(seed, numRolls, banner, lastCat ?? ""),
     trackB: generateRolls(advanceSeed(seed), numRolls, banner, ""),
   }));
 };
