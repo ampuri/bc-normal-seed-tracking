@@ -160,8 +160,13 @@ export const CatseyeBannerData: BannerData = {
 export const LuckyTicketBannerData: BannerData = {
   name: "Lucky Ticket",
   shortName: "lt",
-  rateCumSum: [7400, 9500, 10000],
+  rateCumSum: [0, 7400, 9500, 10000],
   pools: [
+    {
+      rate: 0,
+      units: [],
+      reroll: false,
+    },
     {
       rate: 7400,
       units: [
@@ -204,8 +209,13 @@ export const LuckyTicketBannerData: BannerData = {
 export const LuckyTicketGBannerData: BannerData = {
   name: "Lucky Ticket G",
   shortName: "ltg",
-  rateCumSum: [5100, 8600, 10000],
+  rateCumSum: [0, 5100, 8600, 10000],
   pools: [
+    {
+      rate: 0,
+      units: [],
+      reroll: false,
+    },
     {
       rate: 5100,
       units: [
