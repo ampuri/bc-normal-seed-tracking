@@ -54,11 +54,13 @@ const calculateRerollDestination = ({
   track,
   rerolledUnitName,
   rerolledTimes,
+  rerolledUnitWillRerollAgain,
 }: {
   currentNumber: number;
   track: "A" | "B";
   rerolledUnitName: string;
   rerolledTimes: number;
+  rerolledUnitWillRerollAgain: boolean;
 }) => {
   const nextNumber = currentNumber + 1;
   const oppositeTrack = track === "A" ? "B" : "A";
@@ -67,9 +69,10 @@ const calculateRerollDestination = ({
   const additionalMovement = Math.floor(rerolledTimes / 2);
   const destinationNumber = nextNumber + bToAFactor + additionalMovement;
   const destinationTrack = switchingOntoOppositeTrack ? oppositeTrack : track;
+  const rerollAgainIndicator = rerolledUnitWillRerollAgain ? "R" : "";
   return track === "A"
-    ? `${rerolledUnitName} -> ${destinationNumber}${destinationTrack}`
-    : `<- ${destinationNumber}${destinationTrack} ${rerolledUnitName}`;
+    ? `${rerolledUnitName} -> ${destinationNumber}${destinationTrack}${rerollAgainIndicator}`
+    : `<- ${destinationNumber}${destinationTrack}${rerollAgainIndicator} ${rerolledUnitName}`;
 };
 
 const TrackTable = ({
@@ -144,6 +147,8 @@ const TrackTable = ({
                     track,
                     rerolledUnitName: unit.rerolledUnitName,
                     rerolledTimes: unit.rerolledTimes,
+                    rerolledUnitWillRerollAgain:
+                      unit.rerolledUnitWillRerollAgain,
                   });
                   return (
                     <BottomTd key={j} rarity={unit.rarity}>

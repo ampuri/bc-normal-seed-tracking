@@ -16,6 +16,7 @@ export type Roll = {
   rerolledUnitName?: string;
   rerolledUnitSeed?: number;
   rerolledTimes?: number;
+  rerolledUnitWillRerollAgain?: boolean;
 };
 
 type BannerRolls = {
@@ -153,6 +154,24 @@ const generateRolls = (
         tmpUnitName = rerolledUnitName;
         tmpRemovedIndices.push(nextUnitId);
       }
+      // Check if the rerolled location will reroll again
+      let rerolledUnitWillRerollAgain = false;
+      if (rerollTimes > 0 && banner.pools[rarity].reroll) {
+        const targetLocationRaritySeed = advanceSeed(tmpSeed);
+        const targetLocationRarity = getRarity({
+          seed: targetLocationRaritySeed,
+          banner,
+        });
+        const targetLocationUnitSeed = advanceSeed(targetLocationRaritySeed);
+        const [_, targetLocationUnitName] = getUnit({
+          seed: targetLocationUnitSeed,
+          rarity: targetLocationRarity,
+          banner,
+        });
+        if (targetLocationUnitName === tmpUnitName) {
+          rerolledUnitWillRerollAgain = true;
+        }
+      }
       rolls.push({
         rarity,
         raritySeed,
@@ -161,6 +180,7 @@ const generateRolls = (
         rerolledUnitName: tmpUnitName,
         rerolledUnitSeed: tmpSeed,
         rerolledTimes: rerollTimes,
+        rerolledUnitWillRerollAgain,
       });
     }
     lastRoll = unitName; // Not rerolledUnitName because a reroll would take us off this track
