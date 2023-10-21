@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import React, { useState } from "react";
-import GodfatExampleImage from "./images/godfat.png";
 import { BannerData } from "./utils/bannerData";
 import { generateWorkerInitializationMessage } from "./utils/seedFinder";
 import { WorkerMessage } from "./FinderPage";
 import FinderResultsRare from "./FinderResultsRare";
+const GodfatExampleImage = require("./images/godfat.png");
 
 const Styles = styled.div`
   * {

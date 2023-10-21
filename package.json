@@ -4,7 +4,7 @@
   "description": "React + Typescript + eslint + prettier template",
   "main": "src/index.tsx",
   "scripts": {
-    "build": "rm -rf docs && webpack --mode production && mv dist docs",
+    "build": "rm -rf docs && npm run typecheck && webpack --mode production && mv dist docs",
     "dev": "NODE_ENV=development webpack serve",
     "typecheck": "tsc -p . --noEmit"
   },
