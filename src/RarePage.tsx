@@ -8,7 +8,15 @@ import FinderResultsRare from "./FinderResultsRare";
 const GodfatExampleImage = require("./images/godfat.png");
 
 const parseBannerData = (bannerData: string): BannerData => {
-  const splitBannerData = bannerData.split("\n").map((line) => line.trim());
+  // Some browsers don't copy over the newlines for some reason
+  const lineSeparatedBannerData = bannerData
+    .replace("Rare: ", "\nRare: ")
+    .replace("Super: ", "\nSuper: ")
+    .replace("Uber: ", "\nUber :")
+    .replace("Legendary: ", "\nLegendary: ");
+  const splitBannerData = lineSeparatedBannerData
+    .split("\n")
+    .map((line) => line.trim());
   const relevantBannerData = splitBannerData.filter(
     (line) =>
       line.startsWith("Rare:") ||
