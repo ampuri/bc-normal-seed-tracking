@@ -18,11 +18,26 @@ const Th = styled.th`
   font-weight: bold;
 `;
 
-const Td = styled.td<{ rarity: number }>`
+const Td = styled.td<{ rarity: number; unitName?: string }>`
   white-space: nowrap;
   border: 1px solid black;
   text-align: center;
   background-color: ${(props) => {
+    if (
+      [
+        "Cat Cannon Attack",
+        "Cat Cannon Charge",
+        "Worker Cat Rate",
+        "Worker Cat Wallet",
+        "Base Defense",
+        "Research",
+        "Accounting",
+        "Study",
+        "Cat Energy",
+      ].includes(props.unitName || "")
+    ) {
+      return "#c9e4ff";
+    }
     switch (props.rarity) {
       case 0:
         return "#FFFFFF";
@@ -93,7 +108,11 @@ const TrackTable = ({
                   urlParams.set("lastCat", unit.unitIfDistinct.unitName);
                   const canonicalDestination = `?${urlParams.toString()}`;
                   return (
-                    <TopTd key={j} rarity={unit.rarity}>
+                    <TopTd
+                      key={j}
+                      rarity={unit.rarity}
+                      unitName={unit.unitIfDistinct.unitName}
+                    >
                       {unit.dupeInfo?.showDupe ? (
                         <a href={canonicalDestination}>
                           {unit.unitIfDistinct.unitName}
@@ -137,7 +156,15 @@ const TrackTable = ({
                           unit.dupeInfo?.targetWillRerollAgain ? "R" : ""
                         } ${unit.unitIfDupe?.unitName}`;
                   return (
-                    <BottomTd key={j} rarity={unit.rarity}>
+                    <BottomTd
+                      key={j}
+                      rarity={unit.rarity}
+                      unitName={
+                        unit.dupeInfo?.showDupe
+                          ? unit.unitIfDupe!.unitName
+                          : unit.unitIfDistinct.unitName
+                      }
+                    >
                       {unit.dupeInfo?.showDupe ? (
                         <a href={rerollDestination}>{rerollDestinationText}</a>
                       ) : (
