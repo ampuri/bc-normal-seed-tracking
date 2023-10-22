@@ -1,31 +1,30 @@
-import {
-  BannerData,
-  NormalBannerData,
-  CatfruitBannerData,
-  CatseyeBannerData,
-  NormalBannerPlusData,
-  AllBanners,
-} from "./bannerData";
+import { BannerData, AllBanners } from "./bannerData";
 import { getQueryParam } from "./queryParams";
 
+// Used to power a single cell in the roll table
+// Each roll has two possiblities depending on if the previous roll is a dupe or not
 export type Roll = {
   rarity: number;
   raritySeed: number;
-  unitName: string;
-  unitSeed: number;
-  rerolledUnitName?: string;
-  rerolledUnitSeed?: number;
-  rerolledTimes?: number;
-  rerolledUnitWillRerollAgain?: boolean;
+  unitIfDistinct: {
+    unitName: string;
+    unitSeed: number;
+  };
+  // unitIfDupe will only exist if the roll's rarity can reroll
+  unitIfDupe?: {
+    unitName: string;
+    unitSeed: number;
+    rerolledTimes: number;
+  };
+  // These get filled in later
+  dupeInfo?: {
+    showDupe: boolean;
+    targetCellId: string;
+    targetWillRerollAgain: boolean;
+  };
 };
 
-type BannerRolls = {
-  bannerName: string;
-  trackA: Roll[];
-  trackB: Roll[];
-};
-
-const advanceSeed = (seed: number) => {
+export const advanceSeed = (seed: number) => {
   seed ^= seed << 13;
   seed = seed >>> 0; // Convert to 32bit unsigned integer
   seed ^= seed >>> 17;
@@ -34,23 +33,28 @@ const advanceSeed = (seed: number) => {
   return seed;
 };
 
-const getRarity = ({ seed, banner }: { seed: number; banner: BannerData }) => {
+const getRarity = ({
+  seed,
+  rateCumSum,
+}: {
+  seed: number;
+  rateCumSum: number[];
+}) => {
   const seedMod = seed % 10000;
-  return banner.rateCumSum.findIndex((sum) => seedMod < sum);
+  return rateCumSum.findIndex((sum) => seedMod < sum);
 };
 
+// Returns the unit index and name that a seed will roll
+// Supports dupe rerolls via removedIndices - indices in this array will not be considered from the units array
 const getUnit = ({
   seed,
-  rarity,
-  banner,
+  units,
   removedIndices = [],
 }: {
   seed: number;
-  rarity: number;
-  banner: BannerData;
+  units: string[];
   removedIndices?: number[];
 }): [number, string] => {
-  const units = banner.pools[rarity].units;
   if (removedIndices.length === 0) {
     const seedMod = seed % units.length;
     return [seedMod, units[seedMod]];
@@ -66,14 +70,8 @@ const getUnit = ({
   }
 };
 
-export const getTrackUrlWithSeedQueryParam = (seed: number) => {
-  const queryParams = new URLSearchParams(window.location.search);
-  queryParams.set("seed", seed.toString());
-  return `?${queryParams.toString()}#`;
-};
-
-// TODO: Doesn't support lucky ticket and lucky tichet G which have multiple dupe rares in the pool.
-// Should be fine for now since you can't seed find with those banners, and this fn is only called in Finder
+// A lightweight version of generateRolls that returns only the final seed
+// Should only be used on banners without multiple dupe rares in the pool, like Normal and Normal+
 export const generateRollsLightweight = (
   seed: number,
   numRolls: number,
@@ -88,10 +86,13 @@ export const generateRollsLightweight = (
       finalRollSeed = seed;
     }
     seed = advanceSeed(seed);
-    const rarity = getRarity({ seed, banner });
+    const rarity = getRarity({ seed, rateCumSum: banner.rateCumSum });
 
     seed = advanceSeed(seed);
-    let [unitId, unitName] = getUnit({ seed, rarity, banner });
+    let [unitId, unitName] = getUnit({
+      seed,
+      units: banner.pools[rarity].units,
+    });
     if (unitName === lastRoll && banner.pools[rarity].reroll) {
       if (i === numRolls) {
         finalRollIsReroll = true;
@@ -99,9 +100,8 @@ export const generateRollsLightweight = (
       seed = advanceSeed(seed);
       const [_, rerolledUnitName] = getUnit({
         seed,
-        rarity,
+        units: banner.pools[rarity].units,
         removedIndices: [unitId],
-        banner,
       });
       lastRoll = rerolledUnitName;
     } else {
@@ -112,95 +112,75 @@ export const generateRollsLightweight = (
   return [finalRollSeed, finalRollIsReroll];
 };
 
-const generateRolls = (
-  seed: number,
-  numRolls: number,
-  banner: BannerData,
-  lastCat: string = ""
-) => {
+const generateRolls = (seed: number, numRolls: number, banner: BannerData) => {
   const rolls: Roll[] = [];
 
-  let lastRoll = lastCat;
+  let lastRoll = "";
   for (let i = 0; i < numRolls; i++) {
+    const roll = {} as Roll;
+
+    // Calculate rarity
     seed = advanceSeed(seed);
     const raritySeed = seed;
-    const rarity = getRarity({ seed: raritySeed, banner });
+    const rarity = getRarity({
+      seed: raritySeed,
+      rateCumSum: banner.rateCumSum,
+    });
+    roll.raritySeed = raritySeed;
+    roll.rarity = rarity;
 
+    // Calculate unit if the previous unit was distinct
     seed = advanceSeed(seed);
     const unitSeed = seed;
-    let [unitId, unitName] = getUnit({ seed: unitSeed, rarity, banner });
-    if (unitName !== lastRoll || !banner.pools[rarity].reroll) {
-      rolls.push({
-        rarity,
-        raritySeed,
-        unitName,
-        unitSeed,
-      });
-    } else {
-      // If there's a dupe that should be rerolled, simulate the reroll but don't actually do it
-      let tmpSeed = unitSeed;
-      let tmpUnitName = unitName;
-      const tmpRemovedIndices = [unitId];
+    let [unitId, unitName] = getUnit({
+      seed: unitSeed,
+      units: banner.pools[rarity].units,
+    });
+    roll.unitIfDistinct = {
+      unitName,
+      unitSeed,
+    };
+
+    // Calculate unit if the previous unit was a dupe
+    if (banner.pools[rarity].reroll) {
+      // Here we clone the seed since we don't actually want to reroll
+      let rerollSeed = unitSeed;
+      let rerollUnitName = unitName;
+      const rerollRemovedIndices = [unitId];
       let rerollTimes = 0;
-      while (tmpUnitName === lastRoll && banner.pools[rarity].reroll) {
+      // Reroll until we get something different from the canonical roll
+      while (rerollUnitName === unitName) {
         rerollTimes++;
-        tmpSeed = advanceSeed(tmpSeed);
-        const [nextUnitId, rerolledUnitName] = getUnit({
-          seed: tmpSeed,
-          rarity,
-          removedIndices: tmpRemovedIndices,
-          banner,
+        rerollSeed = advanceSeed(rerollSeed);
+        const [nextUnitId, nextUnitName] = getUnit({
+          seed: rerollSeed,
+          units: banner.pools[rarity].units,
+          removedIndices: rerollRemovedIndices,
         });
-        tmpUnitName = rerolledUnitName;
-        tmpRemovedIndices.push(nextUnitId);
+        rerollUnitName = nextUnitName;
+        rerollRemovedIndices.push(nextUnitId);
       }
-      // Check if the rerolled location will reroll again
-      let rerolledUnitWillRerollAgain = false;
-      if (rerollTimes > 0 && banner.pools[rarity].reroll) {
-        const targetLocationRaritySeed = advanceSeed(tmpSeed);
-        const targetLocationRarity = getRarity({
-          seed: targetLocationRaritySeed,
-          banner,
-        });
-        const targetLocationUnitSeed = advanceSeed(targetLocationRaritySeed);
-        const [_, targetLocationUnitName] = getUnit({
-          seed: targetLocationUnitSeed,
-          rarity: targetLocationRarity,
-          banner,
-        });
-        if (targetLocationUnitName === tmpUnitName) {
-          rerolledUnitWillRerollAgain = true;
-        }
-      }
-      rolls.push({
-        rarity,
-        raritySeed,
-        unitName,
-        unitSeed,
-        rerolledUnitName: tmpUnitName,
-        rerolledUnitSeed: tmpSeed,
+      roll.unitIfDupe = {
+        unitName: rerollUnitName,
+        unitSeed: rerollSeed,
         rerolledTimes: rerollTimes,
-        rerolledUnitWillRerollAgain,
-      });
+      };
     }
-    lastRoll = unitName; // Not rerolledUnitName because a reroll would take us off this track
+    lastRoll = roll.unitIfDistinct.unitName;
+    rolls.push(roll);
   }
 
   return rolls;
 };
 
-export const generateAllRolls = (
-  seed: number,
-  numRolls: number,
-  lastCat: string
-): BannerRolls[] => {
+export const generateAllRolls = (seed: number, numRolls: number) => {
   const selectedBanners = getQueryParam("banners").split(",");
   const banners = AllBanners.filter((banner) =>
     selectedBanners.includes(banner.shortName)
   );
   return banners.map((banner) => ({
     bannerName: banner.name,
-    trackA: generateRolls(seed, numRolls, banner, lastCat ?? ""),
-    trackB: generateRolls(advanceSeed(seed), numRolls, banner, ""),
+    trackA: generateRolls(seed, numRolls, banner),
+    trackB: generateRolls(advanceSeed(seed), numRolls, banner),
   }));
 };

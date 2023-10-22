@@ -1,6 +1,7 @@
 import React from "react";
 import { BannerTrackRolls } from "./RollTable";
 import styled from "@emotion/styled";
+import { Roll } from "./utils/seed";
 
 const zip = (arr: any[]) =>
   Array(Math.min(...arr.map((a) => a.length)))
@@ -49,32 +50,6 @@ const BottomTd = styled(Td)`
   padding: 0 8px;
 `;
 
-const calculateRerollDestination = ({
-  currentNumber,
-  track,
-  rerolledUnitName,
-  rerolledTimes,
-  rerolledUnitWillRerollAgain,
-}: {
-  currentNumber: number;
-  track: "A" | "B";
-  rerolledUnitName: string;
-  rerolledTimes: number;
-  rerolledUnitWillRerollAgain: boolean;
-}) => {
-  const nextNumber = currentNumber + 1;
-  const oppositeTrack = track === "A" ? "B" : "A";
-  const switchingOntoOppositeTrack = rerolledTimes % 2 === 1;
-  const bToAFactor = track === "B" && switchingOntoOppositeTrack ? 1 : 0;
-  const additionalMovement = Math.floor(rerolledTimes / 2);
-  const destinationNumber = nextNumber + bToAFactor + additionalMovement;
-  const destinationTrack = switchingOntoOppositeTrack ? oppositeTrack : track;
-  const rerollAgainIndicator = rerolledUnitWillRerollAgain ? "R" : "";
-  return track === "A"
-    ? `${rerolledUnitName} -> ${destinationNumber}${destinationTrack}${rerollAgainIndicator}`
-    : `<- ${destinationNumber}${destinationTrack}${rerollAgainIndicator} ${rerolledUnitName}`;
-};
-
 const TrackTable = ({
   rolls,
   track,
@@ -109,15 +84,20 @@ const TrackTable = ({
                   {i + 1}
                   {track}
                 </Td>
-                {row.map((unit, j) => {
+                {row.map((unit: Roll, j) => {
                   const urlParams = new URLSearchParams(window.location.search);
-                  urlParams.set("seed", unit.unitSeed.toString());
-                  urlParams.set("lastCat", unit.unitName);
+                  urlParams.set(
+                    "seed",
+                    unit.unitIfDistinct.unitSeed.toString()
+                  );
+                  urlParams.set("lastCat", unit.unitIfDistinct.unitName);
                   const canonicalDestination = `?${urlParams.toString()}`;
                   return (
                     <TopTd key={j} rarity={unit.rarity}>
-                      {unit.rerolledUnitName ? (
-                        <a href={canonicalDestination}>{unit.unitName}</a>
+                      {unit.dupeInfo?.showDupe ? (
+                        <a href={canonicalDestination}>
+                          {unit.unitIfDistinct.unitName}
+                        </a>
                       ) : (
                         "\u00A0"
                       )}
@@ -126,10 +106,13 @@ const TrackTable = ({
                 })}
               </tr>
               <tr>
-                {row.map((unit, j) => {
+                {row.map((unit: Roll, j) => {
                   const urlParams = new URLSearchParams(window.location.search);
-                  urlParams.set("seed", unit.unitSeed.toString());
-                  urlParams.set("lastCat", unit.unitName);
+                  urlParams.set(
+                    "seed",
+                    unit.unitIfDistinct.unitSeed.toString()
+                  );
+                  urlParams.set("lastCat", unit.unitIfDistinct.unitName);
                   const canonicalDestination = `?${urlParams.toString()}`;
 
                   const rerollUrlParams = new URLSearchParams(
@@ -137,25 +120,30 @@ const TrackTable = ({
                   );
                   rerollUrlParams.set(
                     "seed",
-                    unit.rerolledUnitSeed?.toString()
+                    unit.unitIfDupe?.unitSeed?.toString() || ""
                   );
-                  rerollUrlParams.set("lastCat", unit.rerolledUnitName);
+                  rerollUrlParams.set(
+                    "lastCat",
+                    unit.unitIfDupe?.unitName || ""
+                  );
                   const rerollDestination = `?${rerollUrlParams.toString()}`;
 
-                  const rerollDestinationText = calculateRerollDestination({
-                    currentNumber: i + 1,
-                    track,
-                    rerolledUnitName: unit.rerolledUnitName,
-                    rerolledTimes: unit.rerolledTimes,
-                    rerolledUnitWillRerollAgain:
-                      unit.rerolledUnitWillRerollAgain,
-                  });
+                  const rerollDestinationText =
+                    track === "A"
+                      ? `${unit.unitIfDupe?.unitName} -> ${
+                          unit.dupeInfo?.targetCellId
+                        }${unit.dupeInfo?.targetWillRerollAgain ? "R" : ""}`
+                      : `<- ${unit.dupeInfo?.targetCellId}${
+                          unit.dupeInfo?.targetWillRerollAgain ? "R" : ""
+                        } ${unit.unitIfDupe?.unitName}`;
                   return (
                     <BottomTd key={j} rarity={unit.rarity}>
-                      {unit.rerolledUnitName ? (
+                      {unit.dupeInfo?.showDupe ? (
                         <a href={rerollDestination}>{rerollDestinationText}</a>
                       ) : (
-                        <a href={canonicalDestination}>{unit.unitName}</a>
+                        <a href={canonicalDestination}>
+                          {unit.unitIfDistinct.unitName}
+                        </a>
                       )}
                     </BottomTd>
                   );

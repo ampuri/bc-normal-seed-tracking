@@ -1,11 +1,8 @@
 import styled from "@emotion/styled";
 import { Typography, css } from "@mui/material";
 import React from "react";
-import { BannerData, NormalBannerPlusData } from "./utils/bannerData";
-import {
-  generateRollsLightweight,
-  getTrackUrlWithSeedQueryParam,
-} from "./utils/seed";
+import { BannerData } from "./utils/bannerData";
+import { generateRollsLightweight } from "./utils/seed";
 
 const ProgressBarContainer = styled.div`
   width: 100%;

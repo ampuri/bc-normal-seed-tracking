@@ -2,10 +2,13 @@ import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import React from "react";
 import { BannerData } from "./utils/bannerData";
-import {
-  generateRollsLightweight,
-  getTrackUrlWithSeedQueryParam,
-} from "./utils/seed";
+import { generateRollsLightweight } from "./utils/seed";
+
+const getTrackUrlWithSeedQueryParam = (seed: number) => {
+  const queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("seed", seed.toString());
+  return `?${queryParams.toString()}#`;
+};
 
 const ProgressBarContainer = styled.div`
   width: 100%;
