@@ -12,7 +12,7 @@ const parseBannerData = (bannerData: string): BannerData => {
   const lineSeparatedBannerData = bannerData
     .replace("Rare: ", "\nRare: ")
     .replace("Super: ", "\nSuper: ")
-    .replace("Uber: ", "\nUber :")
+    .replace("Uber: ", "\nUber: ")
     .replace("Legendary: ", "\nLegendary: ");
   const splitBannerData = lineSeparatedBannerData
     .split("\n")
