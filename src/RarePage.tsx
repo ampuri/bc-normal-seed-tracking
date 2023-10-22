@@ -7,17 +7,6 @@ import { WorkerMessage } from "./FinderPage";
 import FinderResultsRare from "./FinderResultsRare";
 const GodfatExampleImage = require("./images/godfat.png");
 
-const Styles = styled.div`
-  * {
-    margin: 0;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.43;
-    letter-spacing: 0.01071em;
-  }
-`;
-
 const parseBannerData = (bannerData: string): BannerData => {
   const splitBannerData = bannerData.split("\n").map((line) => line.trim());
   const relevantBannerData = splitBannerData.filter(
@@ -151,7 +140,7 @@ const RarePage = () => {
   };
 
   return (
-    <Styles>
+    <>
       <Typography variant="h4">
         BC [Rare] Seed Finder <a href="#credits">[Credits]</a>
       </Typography>
@@ -166,7 +155,7 @@ const RarePage = () => {
         <li>
           This is an alternative to Godfat's{" "}
           <a href="https://bc-seek.godfat.org/seek">seed finder</a> which runs{" "}
-          <span style={{ fontWeight: "bold" }}>inside your own browser</span>.
+          <strong>inside your own browser</strong>.
           <ul>
             <li>
               Since it runs using your own device's resources, you won't have to
@@ -204,12 +193,10 @@ const RarePage = () => {
             and select the banner you pulled on.
           </li>
           <li>
-            <strong style={{ fontWeight: "bold" }}>
-              You do not need a seed to do this step.
-            </strong>
+            <strong>You do not need a seed to do this step.</strong>
           </li>
           <li>
-            <strong style={{ fontWeight: "bold" }}>
+            <strong>
               There's a seed in the image below, but that's just a random
               placeholder. Just go to{" "}
               <a href="https://bc.godfat.org/?seed=1&details=true">this link</a>{" "}
@@ -330,7 +317,7 @@ const RarePage = () => {
           )}
         </>
       )}
-    </Styles>
+    </>
   );
 };
 

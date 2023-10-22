@@ -5,49 +5,36 @@ import { Typography } from "@mui/material";
 import { getQueryParam, setQueryParam } from "./utils/queryParams";
 import { AllBanners } from "./utils/bannerData";
 
-const Styles = styled.div`
-  * {
-    margin: 0;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.43;
-    letter-spacing: 0.01071em;
-  }
-`;
-
 const Page = () => {
   // We'll just put all our controls here because we're lazy
   const [seedInput, setSeedInput] = useState(getQueryParam("seed"));
   const selectedBanners = getQueryParam("banners").split(",") || [];
 
   return (
-    <Styles>
+    <>
       <Typography variant="h4">
         BC Normal Seed Tracker <a href="#credits">[Credits]</a>
       </Typography>
       <Typography variant="h6">About this tool</Typography>
-      <Typography variant="body1">
+      <ul>
+        <li>
+          The{" "}
+          <strong>
+            normal gacha does NOT share a seed with the rare gacha.
+          </strong>{" "}
+          You'll need to find your seed separately.
+        </li>
         <ul>
           <li>
-            The{" "}
-            <strong style={{ fontWeight: "bold" }}>
-              normal gacha does NOT share a seed with the rare gacha.
-            </strong>{" "}
-            You'll need to find your seed separately.
+            Looking for your seed? Try <a href="#/finder">here</a>.
           </li>
-          <ul>
-            <li>
-              Looking for your seed? Try <a href="#/finder">here</a>.
-            </li>
-          </ul>
-          <li>
-            Track switches work the exact same as rare banners. You can
-            strategically roll to hit or avoid a track switch.
-          </li>
-          <li>Clicking an entry will update your seed.</li>
         </ul>
-      </Typography>
+        <li>
+          Track switches work the exact same as rare banners. You can
+          strategically roll to hit or avoid a track switch.
+        </li>
+        <li>Clicking an entry will update your seed.</li>
+      </ul>
       <Typography variant="h6">Controls</Typography>
       <Typography variant="subtitle2">Current seed</Typography>
       <div style={{ marginBottom: "4px" }}>
@@ -115,7 +102,7 @@ const Page = () => {
       </div>
       <Typography variant="body1">&nbsp;</Typography>
       <RollTable />
-    </Styles>
+    </>
   );
 };
 

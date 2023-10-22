@@ -6,6 +6,7 @@ import Page from "./Page";
 import FinderPage from "./FinderPage";
 import CreditsPage from "./CreditsPage";
 import RarePage from "./RarePage";
+import styled from "@emotion/styled";
 
 const router = createHashRouter([
   {
@@ -26,7 +27,19 @@ const router = createHashRouter([
   },
 ]);
 
+const Styles = styled.div`
+  * {
+    margin: 0;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+  }
+`;
+
 ReactDOM.render(
-  <RouterProvider router={router} />,
+  <Styles>
+    <RouterProvider router={router} />
+  </Styles>,
   document.getElementById("root")
 );

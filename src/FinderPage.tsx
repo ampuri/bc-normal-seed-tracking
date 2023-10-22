@@ -1,20 +1,8 @@
 import React, { useState } from "react";
-import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { generateWorkerInitializationMessage } from "./utils/seedFinder";
 import { NormalBannerData, NormalBannerPlusData } from "./utils/bannerData";
 import FinderResults from "./FinderResults";
-
-const Styles = styled.div`
-  * {
-    margin: 0;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.43;
-    letter-spacing: 0.01071em;
-  }
-`;
 
 export type WorkerMessage = {
   type: "progress" | "seedFound";
@@ -106,21 +94,20 @@ const FinderPage = () => {
     }
   };
   return (
-    <Styles>
+    <>
       <Typography variant="h4">
-        BC Normal Seed Tracker <a href="#credits">[Credits]</a>
+        BC Normal Seed Finder <a href="#credits">[Credits]</a>
       </Typography>
       <Typography variant="h6">About this tool</Typography>
       <Typography variant="body1">
-        <ul>
+        <ul style={{ marginTop: 0 }}>
           <li>
             This tool will find your normal seed by looking for a seed that
             matches the rolls you input.
           </li>
           <li>
-            The searching is done{" "}
-            <strong style={{ fontWeight: "bold" }}>within the browser</strong>,
-            meaning that it will consume your device's resources.
+            The searching is done <strong>within the browser</strong>, meaning
+            that it will consume your device's resources.
             <ul>
               <li>
                 You should expect some heavy device slowdown while the search is
@@ -204,7 +191,7 @@ const FinderPage = () => {
           />
         </>
       )}
-    </Styles>
+    </>
   );
 };
 
