@@ -6,6 +6,7 @@ import { getQueryParam } from "./utils/queryParams";
 
 export type BannerTrackRolls = {
   bannerName: string;
+  bannerShortName: string;
   track: Roll[];
 };
 
@@ -20,6 +21,9 @@ const RollTable = () => {
   // Buffer so that track switches near the end of numRolls can be processed
   const NUM_ROLLS_BUFFER = 10;
   const lastCatFromQueryParams = getQueryParam("lastCat");
+  const [selectedType, selectedSeedStr, selectedBanner] =
+    getQueryParam("selected").split(",");
+  const selectedSeed = parseInt(selectedSeedStr, 10);
 
   const allRolls = generateAllRolls(initialSeed, numRolls + NUM_ROLLS_BUFFER);
   // Augment roll data with dupe track switch data
@@ -79,12 +83,70 @@ const RollTable = () => {
     });
   });
 
+  // Highlight the next 10 pulls from selected
+  if (selectedType) {
+    const selectedRolls = allRolls.find(
+      ({ bannerShortName }) => bannerShortName === selectedBanner
+    );
+    const findCell = (raritySeed: number) =>
+      selectedRolls?.trackA.find((roll) => roll.raritySeed === raritySeed) ||
+      selectedRolls?.trackB.find((roll) => roll.raritySeed === raritySeed);
+    if (selectedRolls) {
+      const startingRoll = findCell(selectedSeed);
+
+      // Weird edge case where the reroll is somehow removed
+      const selectedRerollButStartingRollHasNone =
+        selectedType === "r" && !startingRoll?.dupeInfo?.showDupe;
+
+      if (startingRoll && !selectedRerollButStartingRollHasNone) {
+        // If selectedType = "r", force the unitIfDupe path
+        let prevUnit =
+          selectedType === "c" ? "" : startingRoll.unitIfDistinct.unitName;
+        let currentRoll = startingRoll;
+        for (let i = 0; i < 11; i++) {
+          let destinationRaritySeed = 0;
+          if (currentRoll.unitIfDistinct.unitName !== prevUnit) {
+            // Go down the canonical path
+            currentRoll.highlight = {
+              top: true,
+              bottom: !currentRoll.dupeInfo?.showDupe,
+            };
+            prevUnit = currentRoll.unitIfDistinct.unitName;
+            destinationRaritySeed = advanceSeed(
+              currentRoll.unitIfDistinct.unitSeed
+            );
+          } else {
+            // Go down the reroll path
+            currentRoll.highlight = {
+              top: false,
+              bottom: true,
+            };
+            prevUnit = currentRoll.unitIfDupe!.unitName;
+            destinationRaritySeed = advanceSeed(
+              currentRoll.unitIfDupe!.unitSeed
+            );
+          }
+          if (i === 10) {
+            currentRoll.highlight.isLast = true;
+          }
+          const destination = findCell(destinationRaritySeed);
+          if (!destination) {
+            break;
+          }
+          currentRoll = destination;
+        }
+      }
+    }
+  }
+
   const trackARolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,
+    bannerShortName: roll.bannerShortName,
     track: roll.trackA.slice(0, numRolls),
   }));
   const trackBRolls = allRolls.map((roll) => ({
     bannerName: roll.bannerName,
+    bannerShortName: roll.bannerShortName,
     track: roll.trackB.slice(0, numRolls),
   }));
   return (

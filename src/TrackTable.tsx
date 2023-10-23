@@ -2,6 +2,7 @@ import React from "react";
 import { BannerTrackRolls } from "./RollTable";
 import styled from "@emotion/styled";
 import { Roll } from "./utils/seed";
+import { getQueryParam, setQueryParam } from "./utils/queryParams";
 
 const zip = (arr: any[]) =>
   Array(Math.min(...arr.map((a) => a.length)))
@@ -18,10 +19,25 @@ const Th = styled.th`
   font-weight: bold;
 `;
 
-const Td = styled.td<{ rarity: number; unitName?: string }>`
+const Td = styled.td<{
+  rarity: number;
+  unitName?: string;
+  highlight?: boolean;
+  isLastHighlighted?: boolean;
+}>`
   white-space: nowrap;
   border: 1px solid black;
   text-align: center;
+
+  background-image: ${(props) => {
+    if (props.highlight) {
+      if (props.isLastHighlighted) {
+        return "repeating-linear-gradient(90deg, #00000055 5px, #00000055 15px, #00000033 15px, #00000033 25px);";
+      }
+      return "linear-gradient(#00000033, #00000033)";
+    }
+  }};
+
   background-color: ${(props) => {
     if (
       [
@@ -56,11 +72,13 @@ const Td = styled.td<{ rarity: number; unitName?: string }>`
 `;
 
 const TopTd = styled(Td)`
+  cursor: pointer;
   border-bottom: none;
   padding: 0 8px;
 `;
 
 const BottomTd = styled(Td)`
+  cursor: pointer;
   border-top: none;
   padding: 0 8px;
 `;
@@ -112,6 +130,21 @@ const TrackTable = ({
                       key={j}
                       rarity={unit.rarity}
                       unitName={unit.unitIfDistinct.unitName}
+                      onClick={(e) => {
+                        // Don't highlight if clicking on the link itself
+                        if ((e.target as Node).nodeName === "A") {
+                          return;
+                        }
+                        // r = reroll, c = canonical
+                        const selected = `c,${unit.raritySeed},${rolls[j].bannerShortName}`;
+                        if (getQueryParam("selected") === selected) {
+                          setQueryParam("selected", "");
+                        } else {
+                          setQueryParam("selected", selected);
+                        }
+                      }}
+                      highlight={unit.highlight?.top}
+                      isLastHighlighted={unit.highlight?.isLast}
                     >
                       {unit.dupeInfo?.showDupe ? (
                         <a href={canonicalDestination}>
@@ -164,6 +197,23 @@ const TrackTable = ({
                           ? unit.unitIfDupe!.unitName
                           : unit.unitIfDistinct.unitName
                       }
+                      onClick={(e) => {
+                        // Don't highlight if clicking on the link itself
+                        if ((e.target as Node).nodeName === "A") {
+                          return;
+                        }
+                        // r = reroll, c = canonical
+                        const selected = `${
+                          unit.dupeInfo?.showDupe ? "r" : "c"
+                        },${unit.raritySeed},${rolls[j].bannerShortName}`;
+                        if (getQueryParam("selected") === selected) {
+                          setQueryParam("selected", "");
+                        } else {
+                          setQueryParam("selected", selected);
+                        }
+                      }}
+                      highlight={unit.highlight?.bottom}
+                      isLastHighlighted={unit.highlight?.isLast}
                     >
                       {unit.dupeInfo?.showDupe ? (
                         <a href={rerollDestination}>{rerollDestinationText}</a>

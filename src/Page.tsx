@@ -47,9 +47,7 @@ const Page = () => {
         <button
           type="button"
           onClick={() => {
-            const newUrl = new URL(window.location.href);
-            newUrl.searchParams.set("seed", seedInput);
-            window.location.href = newUrl.toString();
+            setQueryParam("seed", seedInput);
           }}
         >
           Update

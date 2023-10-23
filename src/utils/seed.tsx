@@ -22,6 +22,12 @@ export type Roll = {
     targetCellId: string;
     targetWillRerollAgain: boolean;
   };
+  // highlight will only exist if the roll should be highlighted
+  highlight?: {
+    isLast?: boolean;
+    top: boolean;
+    bottom: boolean;
+  };
 };
 
 export const advanceSeed = (seed: number) => {
@@ -180,6 +186,7 @@ export const generateAllRolls = (seed: number, numRolls: number) => {
   );
   return banners.map((banner) => ({
     bannerName: banner.name,
+    bannerShortName: banner.shortName,
     trackA: generateRolls(seed, numRolls, banner),
     trackB: generateRolls(advanceSeed(seed), numRolls, banner),
   }));
