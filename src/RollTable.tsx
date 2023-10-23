@@ -105,7 +105,20 @@ const RollTable = () => {
         let currentRoll = startingRoll;
         for (let i = 0; i < 11; i++) {
           let destinationRaritySeed = 0;
-          if (currentRoll.unitIfDistinct.unitName !== prevUnit) {
+          if (
+            currentRoll.unitIfDistinct.unitName === prevUnit &&
+            currentRoll.unitIfDupe
+          ) {
+            // Go down the reroll path
+            currentRoll.highlight = {
+              top: false,
+              bottom: true,
+            };
+            prevUnit = currentRoll.unitIfDupe.unitName;
+            destinationRaritySeed = advanceSeed(
+              currentRoll.unitIfDupe.unitSeed
+            );
+          } else {
             // Go down the canonical path
             currentRoll.highlight = {
               top: true,
@@ -114,16 +127,6 @@ const RollTable = () => {
             prevUnit = currentRoll.unitIfDistinct.unitName;
             destinationRaritySeed = advanceSeed(
               currentRoll.unitIfDistinct.unitSeed
-            );
-          } else {
-            // Go down the reroll path
-            currentRoll.highlight = {
-              top: false,
-              bottom: true,
-            };
-            prevUnit = currentRoll.unitIfDupe!.unitName;
-            destinationRaritySeed = advanceSeed(
-              currentRoll.unitIfDupe!.unitSeed
             );
           }
           if (i === 10) {
