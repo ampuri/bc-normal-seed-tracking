@@ -33,7 +33,11 @@ const Page = () => {
           Track switches work the exact same as rare banners. You can
           strategically roll to hit or avoid a track switch.
         </li>
-        <li>Clicking an entry will update your seed.</li>
+        <li>
+          Clicking an <strong>unit name</strong> will update your seed. Clicking{" "}
+          <strong>anywhere else in a cell</strong> will highlight your next 10
+          rolls.
+        </li>
       </ul>
       <Typography variant="h6">Controls</Typography>
       <Typography variant="subtitle2">Current seed</Typography>
