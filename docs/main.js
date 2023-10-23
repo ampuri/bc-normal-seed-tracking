@@ -10,7 +10,7 @@
   border: 1px solid black;
   text-align: center;
 
-  background-image: ${e=>{if(e.highlight)return e.isLastHighlighted?"repeating-linear-gradient(90deg, #00000055 5px, #00000055 15px, #00000033 15px, #00000033 25px);":"linear-gradient(#00000033, #00000033)"}};
+  background-image: ${e=>{if(e.highlight)return e.isLastHighlighted?"repeating-linear-gradient(90deg, #00000075 5px, #00000075 15px, #00000050 15px, #00000050 25px);":"linear-gradient(#00000050, #00000050)"}};
 
   background-color: ${e=>{if(["Cat Cannon Attack","Cat Cannon Charge","Worker Cat Rate","Worker Cat Wallet","Base Defense","Research","Accounting","Study","Cat Energy"].includes(e.unitName||""))return"#c9e4ff";switch(e.rarity){case 0:return"#FFFFFF";case 1:return"#EEEEEE";case 2:return"gold";case 3:return"red";case 4:return"aqua";default:return"#EEEEEE"}}};
 `,Ln=Rn(Nn)`

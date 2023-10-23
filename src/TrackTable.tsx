@@ -32,9 +32,9 @@ const Td = styled.td<{
   background-image: ${(props) => {
     if (props.highlight) {
       if (props.isLastHighlighted) {
-        return "repeating-linear-gradient(90deg, #00000055 5px, #00000055 15px, #00000033 15px, #00000033 25px);";
+        return "repeating-linear-gradient(90deg, #00000075 5px, #00000075 15px, #00000050 15px, #00000050 25px);";
       }
-      return "linear-gradient(#00000033, #00000033)";
+      return "linear-gradient(#00000050, #00000050)";
     }
   }};
 
