@@ -38,6 +38,26 @@ const Page = () => {
           <strong>anywhere else in a cell</strong> will highlight your next 10
           rolls.
         </li>
+        <li>
+          What is <strong>100K XP (β)</strong>?
+          <ul>
+            <li>
+              The Lucky Ticket G banner uses a special 100K XP item with an
+              different ID from the 100K XP used in other banners.
+            </li>
+            <li>
+              This makes no difference ingame, but means that it{" "}
+              <strong>
+                cannot be used to force track switches across banners
+              </strong>
+              .
+            </li>
+            <li>
+              In order to distinguish between the two in the tracker, the Lucky
+              Ticket G-exclusive one is marked with (β).
+            </li>
+          </ul>
+        </li>
       </ul>
       <Typography variant="h6">Controls</Typography>
       <Typography variant="subtitle2">Current seed</Typography>
