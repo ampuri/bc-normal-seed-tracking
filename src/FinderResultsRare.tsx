@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Typography, css } from "@mui/material";
 import React from "react";
 import { BannerData } from "./utils/bannerData";
-import { generateRollsLightweight } from "./utils/seed";
+import { advanceSeed, generateRollsLightweight } from "./utils/seed";
 
 const ProgressBarContainer = styled.div`
   width: 100%;
@@ -32,12 +32,14 @@ const UlWithStrong = styled.ul`
 `;
 
 const FinderResultsRare = ({
+  guaranteed,
   workerProgresses,
   seedsFound,
   isSearching,
   bannerData,
   numPulls,
 }: {
+  guaranteed: boolean;
   workerProgresses: number[];
   seedsFound: number[];
   isSearching: boolean;
@@ -47,6 +49,7 @@ const FinderResultsRare = ({
   if (seedsFound.length > 200) {
     seedsFound = seedsFound.slice(0, 200);
   }
+
   return isSearching ? (
     <div>
       <Typography variant="body1">Searching...</Typography>
@@ -98,21 +101,27 @@ const FinderResultsRare = ({
                 <li>
                   <strong>Seed {i + 1}</strong>
                   <ul>
-                    <li>
+                    <li style={{ color: "#777777" }}>
                       <strong>Before</strong> doing the {numPulls} pulls: {seed}
                     </li>
-                    <li>
+                    <li style={guaranteed ? { color: "#777777" } : {}}>
                       <strong>After</strong> doing the {numPulls} pulls:{" "}
                       {seedAfterRolls}
                     </li>
-                    {nextRollIsReroll && (
+                    {guaranteed && (
+                      <li>
+                        <strong>After track switching</strong> due to the
+                        guarantee: {advanceSeed(seedAfterRolls)}
+                      </li>
+                    )}
+                    {!guaranteed && nextRollIsReroll && (
                       <li>
                         <strong>Important:</strong> For this seed, the next roll
                         is detected to be a <i>dupe track switch</i>.
                         <ul>
                           <li>
-                            The tracker <i>might not account for this</i> if you
-                            use the <strong>After</strong> seed, so it will
+                            The tracker <i>will not account for this</i> if you
+                            just use the <strong>After</strong> seed, so it will
                             incorrectly show you proceeding along track A.
                           </li>
                           <li>

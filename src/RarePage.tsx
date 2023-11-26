@@ -69,6 +69,7 @@ const RarePage = () => {
   const [bannerData, setBannerData] = useState<BannerData | null>(null);
   const hasBannerData = bannerData !== null;
 
+  const [guaranteed, setGuaranteed] = useState<boolean>(false);
   const [userRolls, setUserRolls] = useState<(string | null)[]>(
     Array(10).fill(null)
   );
@@ -263,8 +264,7 @@ const RarePage = () => {
         </button>
         {hasBannerData && (
           <Typography variant="body1" style={{ marginLeft: "8px" }}>
-            Parsed! The parser's validation is pretty light, so there might
-            still be errors. Scroll down...
+            Parsed! Scroll down...
           </Typography>
         )}
       </div>
@@ -272,7 +272,25 @@ const RarePage = () => {
       {hasBannerData && (
         <>
           <Typography variant="h6">Finder</Typography>
+          <Typography variant="subtitle2">Guaranteed?</Typography>
+          <label>
+            <input
+              type="checkbox"
+              checked={guaranteed}
+              onClick={(event) => {
+                setGuaranteed((event.target as HTMLInputElement).checked);
+              }}
+            />
+            &nbsp;Check this box if you rolled on a{" "}
+            <strong>guaranteed uber event</strong>.
+          </label>
           <Typography variant="subtitle2">Rolls</Typography>
+          {guaranteed && (
+            <div>
+              Since you rolled on a guaranteed, put down the 10 cats you
+              received <strong>before your guaranteed uber</strong>.
+            </div>
+          )}
           <div
             style={{
               marginBottom: "4px",
@@ -315,6 +333,7 @@ const RarePage = () => {
             <>
               <Typography variant="h6">Results</Typography>
               <FinderResultsRare
+                guaranteed={guaranteed}
                 workerProgresses={progresses}
                 seedsFound={seedsFound}
                 isSearching={isSearching}
